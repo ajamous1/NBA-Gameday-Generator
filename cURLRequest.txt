@@ -1,7 +1,9 @@
-#text editing
-
-curl -X POST "https://image.adobe.io/pie/psdService/text"  ^
--H "Authorization: Bearer %adobe_access_token%" ^
--H "x-api-key: %adobe_api_key%" ^
--H "Content-Type: application/json" ^
--d "\path\request.json"
+curl -X POST ^
+    'https://image.adobe.io/pie/psdService/text' ^
+    'https://image.adobe.io/pie/psdService/documentOperations' ^
+    'https://image.adobe.io/pie/psdService/smartObject' ^
+    'https://image.adobe.io/pie/psdService/actionJSON' ^
+    -H 'Authorization: Bearer your_access_token_here' ^
+    -H 'x-api-key: your_api_key_here' ^
+    -H 'Content-Type: application/json' ^
+    -d '\path\filename.json'
