@@ -5,6 +5,10 @@ from bs4 import BeautifulSoup
 import time
 import requests
 import json
+import subprocess
+
+adobe_access_token = "access_token"
+adobe_api_key = "api_key"
 
 class WebCrawler:
     def __init__(self, link, num):
@@ -142,4 +146,18 @@ data["game_time"] = time_data
 data["away_last_5"] = last_5_games_results_away
 data["home_last_5"] = last_5_games_results_home
 
+
+curl_command = [
+    'curl',
+    '-X', 'POST',
+    'https://image.adobe.io/pie/psdService/text',
+    '-H', 'Authorization: Bearer {adobe_access_token}',
+    '-H', 'x-api-key: {adobe_api_key}',
+    '-H', 'Content-Type: application/json',
+    '-d', r'\path\filename.json' 
+]
+
+try:
+    output = subprocess.check_output(curl_command, shell=True)
+    print(output.decode('utf-8')) 
 
