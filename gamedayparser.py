@@ -4,6 +4,7 @@ from selenium.common.exceptions import WebDriverException
 from bs4 import BeautifulSoup
 import time
 import requests
+import json
 
 class WebCrawler:
     def __init__(self, link, num):
@@ -125,3 +126,20 @@ if __name__ == "__main__":
         print(f"Away Last 5 Games: {last_5_games_results_away}")
     else:
         print("Failed to fetch away last 5 games results.")
+
+with open('request.json', 'r') as file:
+# read JSON data
+data = json.load(file)
+
+data["away_position"] = seeding_away
+data["home_position"] = seeding_home
+data["away_record"] = record_away
+data["home_record"] = record_home
+data["away_team"] = away_team
+data["home_team"] = home_team
+data["game_date"] = formatted_date
+data["game_time"] = time_data
+data["away_last_5"] = last_5_games_results_away
+data["home_last_5"] = last_5_games_results_home
+
+
