@@ -1,3 +1,4 @@
+#import libraries
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import WebDriverException
@@ -7,10 +8,20 @@ import requests
 import json
 import subprocess
 
+#define access tokens
 adobe_access_token = "access_token"
 adobe_api_key = "api_key"
 
+#define API endpoints
+urls = [
+    "https://image.adobe.io/pie/psdService/text",
+    "https://image.adobe.io/pie/psdService/documentOperations",
+    "https://image.adobe.io/pie/psdService/smartObject",
+    "https://image.adobe.io/pie/psdService/actionJSON"
+]
+
 class WebCrawler:
+#initialize webcrawling
     def __init__(self, link, num):
         print("WebCrawler created")
         self.first_link = link
@@ -30,7 +41,7 @@ class WebCrawler:
         except WebDriverException as e:
             print(f"Error setting up Chromedriver: {e}")
             exit(1)
-
+ 
     def crawl(self):
         self.driver.get(self.first_link)
         time.sleep(2)
@@ -48,7 +59,7 @@ class WebCrawler:
         self.home_team = team_names.replace(self.away_team, "").strip()
         formatted_date = self.format_date(raw_date)
 
-        # Output data for both teams
+    # Output data for both teams
         self.process_and_output_data(self.home_team, self.away_team, jerseys, location, formatted_date, time_data)
 
     def process_and_output_data(self, home_team, away_team, jerseys, location, date, time_data):
@@ -62,7 +73,7 @@ class WebCrawler:
 
     def quit_webdriver(self):
         self.driver.quit()
-
+    #fetch last 5 games
 def get_last_5_games_results(team_name):
     base_url = f"https://www.statmuse.com/nba/ask/{team_name.lower().replace(' ', '-')}-last-5-games"
     response = requests.get(base_url)
@@ -82,7 +93,7 @@ def get_last_5_games_results(team_name):
     else:
         print(f"Failed to fetch data from {base_url}")
         return None
-
+    #fetch team record and seeding
 def get_record_and_seeding(team_name):
     base_url = f"https://www.statmuse.com/ask/{team_name.lower().replace(' ', '-')}"
     response = requests.get(base_url)
@@ -101,7 +112,7 @@ def get_record_and_seeding(team_name):
     else:
         print(f"Failed to fetch data from {base_url}")
         return None, None
-
+    #input team name
 if __name__ == "__main__":
     team_name = input("Enter the team name (e.g., Minnesota Timberwolves): ")
 
@@ -132,6 +143,7 @@ if __name__ == "__main__":
         print("Failed to fetch away last 5 games results.")
 
 with open('request.json', 'r') as file:
+
 # read JSON data
 data = json.load(file)
 
@@ -150,14 +162,13 @@ data["home_last_5"] = last_5_games_results_home
 curl_command = [
     'curl',
     '-X', 'POST',
-    'https://image.adobe.io/pie/psdService/text',
+    *urls,
     '-H', 'Authorization: Bearer {adobe_access_token}',
     '-H', 'x-api-key: {adobe_api_key}',
     '-H', 'Content-Type: application/json',
     '-d', r'\path\filename.json' 
 ]
 
-try:
-    output = subprocess.check_output(curl_command, shell=True)
-    print(output.decode('utf-8')) 
+output = subprocess.check_output(curl_command, shell=True)
+print(output.decode('utf-8')) 
 
