@@ -6,7 +6,7 @@ _Libraries/APIs:_
 
 Selenium ✅
 
-ChromWebDriver 🚗
+ChromeWebDriver 🚗
 
 BeautifulSoup 🍲
 
