@@ -8,20 +8,22 @@ import requests
 import json
 import subprocess
 
+# Define the Dropbox access token
+dropbox_access_token = "DROPBOX_ACCESS_TOKEN_PLACEHOLDER"
+
 #define access tokens
-adobe_access_token = "access_token"
-adobe_api_key = "api_key"
+adobe_client_secret = "ADOBE_CLIENT_SECRET_PLACEHOLDER"
+adobe_access_token = "ADOBE_ACCESS_TOKEN_PLACEHOLDER"
+adobe_api_key = "ADOBE_API_KEY_PLACEHOLDER"
 
 #define API endpoints
 urls = [
+    "https://image.adobe.io/pie/psdService/actionJSON",
     "https://image.adobe.io/pie/psdService/text",
-    "https://image.adobe.io/pie/psdService/documentOperations",
-    "https://image.adobe.io/pie/psdService/smartObject",
-    "https://image.adobe.io/pie/psdService/actionJSON"
+   
 ]
 
 class WebCrawler:
-#initialize webcrawling
     def __init__(self, link, num):
         print("WebCrawler created")
         self.first_link = link
@@ -29,14 +31,23 @@ class WebCrawler:
         self.driver = self.setup_webdriver()
         self.home_team = None
         self.away_team = None
-        # Initialize teams
+        self.record_home = None
+        self.seeding_home = None
+        self.record_away = None
+        self.seeding_away = None
+        self.last_5_games_results_home = None
+        self.last_5_games_results_away = None
+        self.raw_date = None
+        self.time_data = None
+        self.formatted_date = None
         self.crawl()
+
 
     def setup_webdriver(self):
         try:
             options = Options()
             options.add_argument('--headless')
-            driver_path = r'C:\Users\ahmad\Downloads\chromedriver-win64\chromedriver-win64\chromedriver.exe'
+            driver_path = "CHROMEDRIVER_PATH_PLACEHOLDER"
             return webdriver.Chrome(executable_path=driver_path, options=options)
         except WebDriverException as e:
             print(f"Error setting up Chromedriver: {e}")
@@ -51,6 +62,7 @@ class WebCrawler:
         location_elements = soup.select('h6.MuiTypography-h6')
         location_data = location_elements[1] if location_elements else None
         location = location_data.text.strip() if location_data else "N/A"
+        self.time_data = soup.select_one('.MuiTypography-caption.MatchTime').text
         time_data = soup.select_one('.MuiTypography-caption.MatchTime').text
         jerseys_info = soup.select('.customEditionChip .MuiChip-label')
         jerseys = ', '.join([jersey.text for jersey in jerseys_info[:2]])
@@ -58,13 +70,25 @@ class WebCrawler:
         self.away_team = opponent_info[1].text.strip() if opponent_info else "N/A"
         self.home_team = team_names.replace(self.away_team, "").strip()
         formatted_date = self.format_date(raw_date)
+        self.formatted_date = formatted_date
+        
 
-    # Output data for both teams
+        # Fetching additional data
+        self.record_home, self.seeding_home = get_record_and_seeding(self.home_team)
+        self.record_away, self.seeding_away = get_record_and_seeding(self.away_team)
+        self.last_5_games_results_home = get_last_5_games_results(self.home_team)
+        self.last_5_games_results_away = get_last_5_games_results(self.away_team)
+
+        # Output data for both teams
         self.process_and_output_data(self.home_team, self.away_team, jerseys, location, formatted_date, time_data)
 
     def process_and_output_data(self, home_team, away_team, jerseys, location, date, time_data):
         try:
             print(f"Processed data:\nHome Team: {home_team}\nAway Team: {away_team} \nJerseys: {jerseys}\nLocation: {location}\nDate: {date}\nTime: {time_data}")
+            print(f"Home Record: {self.record_home}\nHome Seeding: {self.seeding_home}")
+            print(f"Home Last 5 Games: {self.last_5_games_results_home}")
+            print(f"Away Record: {self.record_away}\nAway Seeding: {self.seeding_away}")
+            print(f"Away Last 5 Games: {self.last_5_games_results_away}")
         except UnicodeEncodeError:
             print("UnicodeEncodeError: Unable to print some characters")
 
@@ -73,7 +97,8 @@ class WebCrawler:
 
     def quit_webdriver(self):
         self.driver.quit()
-    #fetch last 5 games
+
+# Fetch last 5 games results
 def get_last_5_games_results(team_name):
     base_url = f"https://www.statmuse.com/nba/ask/{team_name.lower().replace(' ', '-')}-last-5-games"
     response = requests.get(base_url)
@@ -93,7 +118,8 @@ def get_last_5_games_results(team_name):
     else:
         print(f"Failed to fetch data from {base_url}")
         return None
-    #fetch team record and seeding
+
+# Fetch team record and seeding
 def get_record_and_seeding(team_name):
     base_url = f"https://www.statmuse.com/ask/{team_name.lower().replace(' ', '-')}"
     response = requests.get(base_url)
@@ -112,63 +138,195 @@ def get_record_and_seeding(team_name):
     else:
         print(f"Failed to fetch data from {base_url}")
         return None, None
-    #input team name
+
 if __name__ == "__main__":
-    team_name = input("Enter the team name (e.g., Minnesota Timberwolves): ")
-
+    team_name = input("Enter the team name: ")
     team_crawler = WebCrawler(fr"https://lockervision.nba.com/team/{team_name.lower().replace(' ', '-')}", 1)
+
+
+
+# Define the curl command to generate Adobe access token
+adobe_curl_command = [
+    'curl',
+    '-X', 'POST',
+    'https://ims-na1.adobelogin.com/ims/token/v3',
+    '-H', 'Content-Type: application/x-www-form-urlencoded',
+    '-d', f'grant_type=client_credentials&client_id={adobe_api_key}&client_secret={adobe_client_secret}&scope=AdobeID,openid'
+]
+
+# Execute the curl command to generate Adobe access token
+try:
+    adobe_output = subprocess.check_output(adobe_curl_command)
+    adobe_output_json = json.loads(adobe_output)
+    adobe_access_token = adobe_output_json.get('access_token')
+except subprocess.CalledProcessError as e:
+    print(f"Error generating Adobe access token: {e}")
+    exit(1)
+
+# Print the generated Adobe access token
+print("ADOBE ACCESS TOKEN:")
+print(adobe_access_token)
+
+
+
+
+# Define the curl command to generate download link
+download_curl_command = [
+    'curl',
+    '-X', 'POST',
+    'https://api.dropboxapi.com/2/files/get_temporary_link',
+    '--header', f'Authorization: Bearer {dropbox_access_token}',
+    '--header', 'Content-Type: application/json',
+    '--data', '{"path":"/Gameday Generator/Base.psd"}'
+]
+
+# Execute the curl command to generate download link
+try:
+    download_output = subprocess.check_output(download_curl_command)
+    download_output_json = json.loads(download_output)
+    download_link = download_output_json.get('link')
+except subprocess.CalledProcessError as e:
+    print(f"Error generating download link: {e}")
+    exit(1)
+
+# Define the curl command to generate upload link
+upload_curl_command = [
+    'curl',
+    '-X', 'POST',
+    'https://api.dropboxapi.com/2/files/get_temporary_upload_link',
+    '--header', f'Authorization: Bearer {dropbox_access_token}',
+    '--header', 'Content-Type: application/json',
+    '--data', '{"commit_info":{"path":"/Gameday Generator/Base1.psd","mode":{".tag":"overwrite"}}}'
+]
+
+# Execute the curl command to generate upload link
+try:
+    upload_output = subprocess.check_output(upload_curl_command)
+    upload_output_json = json.loads(upload_output)
+    upload_link = upload_output_json.get('link')
+except subprocess.CalledProcessError as e:
+    print(f"Error generating Adobe access token: {e}")
+    exit(1)
+
+# Print the generated Adobe access token
+print("ADOBE ACCESS TOKEN:")
+print(adobe_access_token)
+
+
+
+
+# Define the curl command to generate download link
+download_curl_command = [
+    'curl',
+    '-X', 'POST',
+    'https://api.dropboxapi.com/2/files/get_temporary_link',
+    '--header', f'Authorization: Bearer {dropbox_access_token}',
+    '--header', 'Content-Type: application/json',
+    '--data', '{"path":"/Gameday Generator/Base.psd"}'
+]
+
+# Execute the curl command to generate download link
+try:
+    download_output = subprocess.check_output(download_curl_command)
+    download_output_json = json.loads(download_output)
+    download_link = download_output_json.get('link')
+except subprocess.CalledProcessError as e:
+    print(f"Error generating download link: {e}")
+    exit(1)
+
+# Define the curl command to generate upload link
+upload_curl_command = [
+    'curl',
+    '-X', 'POST',
+    'https://api.dropboxapi.com/2/files/get_temporary_upload_link',
+    '--header', f'Authorization: Bearer {dropbox_access_token}',
+    '--header', 'Content-Type: application/json',
+    '--data', '{"commit_info":{"path":"/Gameday Generator/Base1.psd","mode":{".tag":"overwrite"}}}'
+]
+
+# Execute the curl command to generate upload link
+try:
+    upload_output = subprocess.check_output(upload_curl_command)
+    upload_output_json = json.loads(upload_output)
+    upload_link = upload_output_json.get('link')
+except subprocess.CalledProcessError as e:
+    print(f"Error generating upload link: {e}")
+    exit(1)
+
+# Print the generated links
+print("DOWNLOAD LINK:")
+print(download_link)
+print("UPLOAD LINK:")
+print(upload_link)
+
+
+# Load the JSON file
+try:
+    with open('PATH_TO_YOUR_JSON_FILE', 'r') as file:
+        data = json.load(file)
+except Exception as e:
+    print(f"Error loading JSON file: {e}")
+    exit(1)
+
+# Modify the data according to the crawled values
+try:
+  for layer in data["options"]["layers"]:
+    if layer["name"] == "Away Position":
+        layer["text"]["contents"] = team_crawler.seeding_away
+    if layer["name"] == "Home Position":
+        layer["text"]["contents"] = team_crawler.seeding_home
+    if layer["name"] == "Away Record":
+        layer["text"]["contents"] = team_crawler.record_away
+    if layer["name"] == "Home Record":
+        layer["text"]["contents"] = team_crawler.record_home
+    if layer["name"] == "Away Team":
+        layer["text"]["contents"] = team_crawler.away_team
+    if layer["name"] == "Home Team":
+        layer["text"]["contents"] = team_crawler.home_team
+    if layer["name"] == "Date":
+        layer["text"]["contents"] = team_crawler.formatted_date
+    if layer["name"] == "Time":
+        layer["text"]["contents"] = team_crawler.time_data
+
+  for input_layer in data["inputs"]:
+    if input_layer["href"] == "download_link":  # Check if href is "download_link"
+        input_layer["href"] = download_link  # Assign the download_link value to href
+
+  for output_layer in data["outputs"]:
+    if output_layer["href"] == "upload_link":  # Check if href is "upload_link"
+        output_layer["href"] = upload_link  # Assign the upload_link value to href
+
     
-    record_home, seeding_home = get_record_and_seeding(team_crawler.home_team)
-    if record_home and seeding_home:
-        print(f"Home Record: {record_home}\nHome Seeding: {seeding_home}")
-    else:
-        print("Failed to fetch home record and seeding.")
-
-    last_5_games_results_home = get_last_5_games_results(team_crawler.home_team)
-    if last_5_games_results_home:
-        print(f"Home Last 5 Games: {last_5_games_results_home}")
-    else:
-        print("Failed to fetch home last 5 games results.")
     
-    record_away, seeding_away = get_record_and_seeding(team_crawler.away_team)
-    if record_away and seeding_away:
-        print(f"Away Record: {record_away}\nAway Seeding: {seeding_away}")
-    else:
-        print("Failed to fetch away record and seeding.")
+        
+except Exception as e:
+    print(f"Error modifying data: {e}")
+    exit(1)
 
-    last_5_games_results_away = get_last_5_games_results(team_crawler.away_team)
-    if last_5_games_results_away:
-        print(f"Away Last 5 Games: {last_5_games_results_away}")
-    else:
-        print("Failed to fetch away last 5 games results.")
+# Write the modified data back to the NEW JSON file
+try:
+    with open('NEW_JSON_FILE_PATH', 'w') as file:
+        json.dump(data, file, indent=4)
+except Exception as e:
+    print(f"Error writing to NEW JSON file: {e}")
+    exit(1)
 
-with open('request.json', 'r') as file:
-
-# read JSON data
-data = json.load(file)
-
-data["away_position"] = seeding_away
-data["home_position"] = seeding_home
-data["away_record"] = record_away
-data["home_record"] = record_home
-data["away_team"] = away_team
-data["home_team"] = home_team
-data["game_date"] = formatted_date
-data["game_time"] = time_data
-data["away_last_5"] = last_5_games_results_away
-data["home_last_5"] = last_5_games_results_home
-
-
+# Define the curl command with the corrected file path
 curl_command = [
     'curl',
     '-X', 'POST',
     *urls,
-    '-H', 'Authorization: Bearer {adobe_access_token}',
-    '-H', 'x-api-key: {adobe_api_key}',
+    '-H', f'Authorization: Bearer {adobe_access_token}',
+    '-H', f'x-api-key: {adobe_api_key}',
     '-H', 'Content-Type: application/json',
-    '-d', r'\path\filename.json' 
+    '-d', f'@NEW_JSON_FILE_PATH'  # Use double backslashes for the file path
 ]
 
-output = subprocess.check_output(curl_command, shell=True)
-print(output.decode('utf-8')) 
+# Execute the curl command
+try:
+    output = subprocess.check_output(curl_command)
+    print(output.decode('utf-8'))
+except subprocess.CalledProcessError as e:
+    print(f"Error executing curl command: {e}")
+
 
