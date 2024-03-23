@@ -7,14 +7,15 @@ import time
 import requests
 import json
 import subprocess
+from array import array
+import os
 
 # Define the Dropbox access token
-dropbox_access_token = "DROPBOX_ACCESS_TOKEN_PLACEHOLDER"
+dropbox_access_token = os.getenv("DROPBOX_ACCESS_TOKEN")
+adobe_client_secret = os.getenv("ADOBE_CLIENT_SECRET")
+adobe_access_token = os.getenv("ADOBE_ACCESS_TOKEN")
+adobe_api_key = os.getenv("ADOBE_API_KEY")
 
-#define access tokens
-adobe_client_secret = "ADOBE_CLIENT_SECRET_PLACEHOLDER"
-adobe_access_token = "ADOBE_ACCESS_TOKEN_PLACEHOLDER"
-adobe_api_key = "ADOBE_API_KEY_PLACEHOLDER"
 
 #define API endpoints
 urls = [
@@ -22,6 +23,11 @@ urls = [
     "https://image.adobe.io/pie/psdService/text",
    
 ]
+
+home_team_primary = [50, 20, 100]
+home_team_secondary = [40, 70, 247]
+away_team_primary = [30, 57, 70]
+away_team_secondary = [20, 80, 40]
 
 class WebCrawler:
     def __init__(self, link, num):
@@ -47,7 +53,7 @@ class WebCrawler:
         try:
             options = Options()
             options.add_argument('--headless')
-            driver_path = "CHROMEDRIVER_PATH_PLACEHOLDER"
+            driver_path = r"C:\Users\ahmad\Downloads\chromedriver-win64\chromedriver-win64\chromedriver.exe"
             return webdriver.Chrome(executable_path=driver_path, options=options)
         except WebDriverException as e:
             print(f"Error setting up Chromedriver: {e}")
@@ -262,7 +268,7 @@ print(upload_link)
 
 # Load the JSON file
 try:
-    with open('PATH_TO_YOUR_JSON_FILE', 'r') as file:
+     with open('C:\\Users\\ahmad\\OneDrive\\Gameday Generator\\request.json', 'r') as file:
         data = json.load(file)
 except Exception as e:
     print(f"Error loading JSON file: {e}")
@@ -295,9 +301,49 @@ try:
   for output_layer in data["outputs"]:
     if output_layer["href"] == "upload_link":  # Check if href is "upload_link"
         output_layer["href"] = upload_link  # Assign the upload_link value to href
+  for i in range(0, len(data["options"]["actionJSON"]), 2):
+    select_action = data["options"]["actionJSON"][i]
+    set_action = data["options"]["actionJSON"][i+1]
+    
+    # Get the layer name from the select action
+    layer_name = select_action["_target"][0]["_name"]
+    
+    # Update the color values in the set action based on the layer name
+    if layer_name == "Home Team Primary":
+        set_action["to"]["color"]["red"] = home_team_primary[0]
+        set_action["to"]["color"]["grain"] = home_team_primary[1]
+        set_action["to"]["color"]["blue"] = home_team_primary[2]
+    if layer_name == "Home Team Secondary":
+        set_action["to"]["color"]["red"] = home_team_secondary[0]
+        set_action["to"]["color"]["grain"] = home_team_secondary[1]
+        set_action["to"]["color"]["blue"] = home_team_secondary[2]
+    if layer_name == "Away Team Primary":
+        set_action["to"]["color"]["red"] = away_team_primary[0]
+        set_action["to"]["color"]["grain"] = away_team_primary[1]
+        set_action["to"]["color"]["blue"] = away_team_primary[2]
+    if layer_name == "Away Team Secondary":
+        set_action["to"]["color"]["red"] = away_team_secondary[0]
+        set_action["to"]["color"]["grain"] = away_team_secondary[1]
+        set_action["to"]["color"]["blue"] = away_team_secondary[2]
 
     
-    
+    # Iterate over the actions in 'actionJSON'
+  for i in range(len(data["options"]["actionJSON"])):
+    if data["options"]["actionJSON"][i]["_obj"] == "select":
+        layer_name = data["options"]["actionJSON"][i]["_target"][0]["_name"]
+    elif data["options"]["actionJSON"][i]["_obj"] == "set":
+        if "to" in data["options"]["actionJSON"][i] and "gradient" in data["options"]["actionJSON"][i]["to"]:
+            if layer_name == "Home Team Gradient":
+                for color_stop in data["options"]["actionJSON"][i]["to"]["gradient"]["colors"]:
+                    color_stop["color"]["red"] = home_team_secondary[0]
+                    color_stop["color"]["grain"] = home_team_secondary[1]
+                    color_stop["color"]["blue"] = home_team_secondary[2]
+            if layer_name == "Away Team Gradient":
+                for color_stop in data["options"]["actionJSON"][i]["to"]["gradient"]["colors"]:
+                    color_stop["color"]["red"] = away_team_secondary[0]
+                    color_stop["color"]["grain"] = away_team_secondary[1]
+                    color_stop["color"]["blue"] = away_team_secondary[2]
+
         
 except Exception as e:
     print(f"Error modifying data: {e}")
@@ -305,7 +351,7 @@ except Exception as e:
 
 # Write the modified data back to the NEW JSON file
 try:
-    with open('NEW_JSON_FILE_PATH', 'w') as file:
+    with open('C:\\Users\\ahmad\\OneDrive\\Gameday Generator\\NEWrequest.json', 'w') as file:
         json.dump(data, file, indent=4)
 except Exception as e:
     print(f"Error writing to NEW JSON file: {e}")
@@ -319,7 +365,7 @@ curl_command = [
     '-H', f'Authorization: Bearer {adobe_access_token}',
     '-H', f'x-api-key: {adobe_api_key}',
     '-H', 'Content-Type: application/json',
-    '-d', f'@NEW_JSON_FILE_PATH'  # Use double backslashes for the file path
+    '-d', f'@C:\\Users\\ahmad\\OneDrive\\Gameday Generator\\NEWrequest.json'  # Use double backslashes for the file path
 ]
 
 # Execute the curl command
