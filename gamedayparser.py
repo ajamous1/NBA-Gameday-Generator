@@ -57,6 +57,17 @@ class WebCrawler:
             exit(1)
  
     def crawl(self):
+        home_player_name = input("Enter home player name: ")
+        away_player_name = input("Enter away player name: ")
+
+        home_player_stats = self.get_player_stats(home_player_name)
+        away_player_stats = self.get_player_stats(away_player_name)
+
+        if home_player_stats and away_player_stats:
+            print("Home Player Stats:", home_player_stats)
+            print("Away Player Stats:", away_player_stats)
+        else:
+            print("Failed to fetch stats for one or both players")
         self.driver.get(self.first_link)
         time.sleep(2)
         soup = BeautifulSoup(self.driver.page_source, 'html.parser')
@@ -96,7 +107,11 @@ class WebCrawler:
             print("UnicodeEncodeError: Unable to print some characters")
 
     def format_date(self, raw_date):
-        return raw_date
+        date_str = raw_date.split(',')[1].strip()
+        game_date = datetime.datetime.strptime(date_str, '%B %d, %Y')
+        game_time = datetime.datetime.strptime(self.time_data, '%I:%M %p') - datetime.timedelta(hours=1)
+        formatted_date = game_date.strftime('%B %d, %Y') + ' at ' + game_time.strftime('%I:%M %p CT')
+        return formatted_date
 
     def quit_webdriver(self):
         self.driver.quit()
@@ -140,7 +155,40 @@ class WebCrawler:
         else:
             print(f"Failed to fetch data from {base_url}")
             return None, None
+    def get_player_stats(self, player_name):
+        base_url = f"https://www.statmuse.com/ask/{player_name}"
+        response = requests.get(base_url)
 
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.content, 'html.parser')
+
+            stats = {}
+
+            # Extract points per game
+            ppg_element = soup.find('div', text='PPG')
+            if ppg_element:
+                points = ppg_element.find_next('p', class_='text-3xl').text.strip()
+                stats['PPG'] = f"{points} PTS"
+
+            # Extract rebounds per game
+            rpg_element = soup.find('div', text='RPG')
+            if rpg_element:
+                rebounds = rpg_element.find_next('p', class_='text-3xl').text.strip()
+                stats['RPG'] = f"{rebounds} REB"
+
+            # Extract assists per game
+            apg_element = soup.find('div', text='APG')
+            if apg_element:
+                assists = apg_element.find_next('p', class_='text-3xl').text.strip()
+                stats['APG'] = f"{assists} AST"
+
+            # Extract other stats as needed (BPG, SPG, etc.)
+
+            return stats
+        else:
+            print(f"Failed to fetch stats for {player_name} from {base_url}")
+            return None
+        
 if __name__ == "__main__":
     team_name = input("Enter the team name: ")
     team_crawler = WebCrawler(fr"https://lockervision.nba.com/team/{team_name.lower().replace(' ', '-')}", 1)
