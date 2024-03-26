@@ -10,7 +10,7 @@ import subprocess
 import os
 
 # Define the Dropbox access token
-dropbox_access_token = ("uat.AE00TcahKBhShtqopF6Qp-eMYIKrlGxLeM8FyCXyptJO0py_R-W3BxrDxhTeSudtZKVQkYW0X5Si77oNw3FjOpp-MjHhOWkwc88s8mf8SyesYkIZ3yfDGYTVj7FY_ErUcpa5dN_MuYghqx2LFTOvSWSUqedKPGppiVKspt9OZSbu5rJk7BYX6tv-wQB9M0iy7WmOOrwWDWE3BhEJTYC_aO7uvuzyz52fVfRhDntN-ehk9iDHJJmpcacYy66gppuf7Zszy1yJoB-fXcw44As9n9vCXKXeJTtLerf-0ZA3CMNKIc1fFRzlDnqs36AW5FPtdTjCgi6Gb_vuVrXGueau5SX4Y-59IazgPaMSC0G_cU643PQyfAZPRhuAaKT9njKiuEMmvOyY9Fal6XHzKRdQ5miEWKV4rYszsj2K3_eGEnSELrEle-p3RRe5OWK0AzYBfB0vf_Zu1VpmzFSp3ADXPyPE3D_4CQK6lOw7oTpSDu4KD4iF7nvBdNeYUYAMBbbQWS4ucAOWozRBX6oJ0joqWWI4-3OVA4roOakO0-onVYz3LCX-9Ckt8hoJeakslEIc00WyTodlBcP6MrMxdfZfQ6CQKzAKExR4o-Y08DqXYYMi18yS12Ubz2u5DuR1r7AKg84FG1YgocO24fQ4BJCvwN5Vr2232643FF0a5A6KW-m4TMDZPclgeC1LkLw9zUx9zyVQTpTXxICQtX5veuJv5LtvgeWpAEd7W1G2DO5237R0Dnlr_NmUo0WqIHbDFrCEv7XGsFHbuKI_2yngF7u8OyoxTH_SPXQ2W6CjicGnUAjb6hgWKk1yGF0MnRReJxWH3O3opbUxzNICE2pBPuG9XstrUu8wza2yWa5mMOykPVShEmENlAkrSEjN7_aBXDup8RB0yqrnJzPtp5GC7UeRtT04y6AkyDQIIKLDUobcAGFP6IQ9XJWhPNpuHivS0X0lCL7GKGrJy0J1BPp855Wlh46BauIJly9TSGzlpEGFQ9X4l-ECrP83DVtTK1ZWdS87pYscjKuEDPBLUgL9DeEAkj1xrH-shSRDq_eWHe7Zr28lBr_mWYHp2OeS83ZbixiZwN63EPQhEwPv-mIa9oEtdvDyPjbj0fPirhxXBauL039G5WTlKdvPVFcK-D7YqKlwcWJ-xOr_kGtBxQFuaCzQZOgu12EtCMr8e7aV7LLHu1IRcPDLR7jtNoQ-ysvAAW-XbgIndS-9fY5iqzhCOLIdJe9AXJ8waLKHH3f7fNS9OhtFUD-unBcCArf9smX7m4JN276k-zHkEJFoiVidRI6Uk4e1eGiumeCX78YkBRg6pFKprALoHV4EWgt1cnLGlKzJAsvuuFuEdtHvfXSgQjR6vvflJD58N_Vcy8OEAqyqx4HeVi6h51078nZ29iP8pi4eehKLj9oybdkf0AVOjPk48LJWfJiRv6kH5vMBFinm8-CJuQ")
+dropbox_access_token = ("DROPBOX_ACCESS_TOKEN")
 adobe_client_secret = os.getenv("ADOBE_CLIENT_SECRET")
 adobe_access_token = " "
 adobe_api_key = os.getenv("ADOBE_API_KEY")
@@ -57,6 +57,18 @@ class WebCrawler:
             exit(1)
  
     def crawl(self):
+        base_url = f"https://www.statmuse.com/ask/{self.team_name}"
+        response = requests.get(base_url)
+
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.content, 'html.parser')
+            team_name_element = soup.select_one('a[data-cy-team-name-link]')
+            if team_name_element:
+                self.team_name = team_name_element.get_text().strip().lower().replace(' ', '-')
+            else:
+                print("Team name not found on StatMuse.")
+                return
+        
         home_player_name = input("Enter home player name: ")
         away_player_name = input("Enter away player name: ")
 
