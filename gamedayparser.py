@@ -10,7 +10,7 @@ import subprocess
 import os
 
 # Define the Dropbox access token
-dropbox_access_token = ("")
+dropbox_access_token = ("uat.AE3bAAY2VMB8_C7hr9JAY_zzvyqAJNH_6-IhBAPqvPrRwkW5RPvQc6TSovdssWqZDnXXTjp2H0imKBV_Cba-eblj2wVkFJ9nYSwedJXVr7Z7MYTfx6GDeIdFOuxRbRmcDIlDIbFw3sDYR-76Xt7bhCYV8ZScD43n08QZiJg3au4QZdGi3cqQ445XwrkE9cAly7Az-_3D1Bd770hjKMKILT3ASE5tybuhf3FxdFhuJXV-92s8-jog64lgJM-Jo4doDWtMFhmOUusqXHIpsel6mbuNpsT7Cv5R-G8cyNyqlLsKlbK1yTZ74xd3XvLHmH6ctmyLkqoD2Xz7l9fMXCQdDAFfa9WvSDXhRfpYjk7bJcX7RcgU-oniF--ewXKlYccdTyfM_5b5EsVkkMJ3dYQB2KoXQsPbCLd_NLHSS0JjrSly7bcG2GRhyi64AKUC3JahJlru1tbCC2DwhQ1MGfGbztwwIjNHnY7hfF63pPrM_Ie-0RTq7V4u3RVn_R2-IHiv-XO9n7Z3Acl-uGTMHBDX6Qblj9fMaBgX3qB4S6v7ExId7U5rkqhcetXeelFXZy3-9LoYGGC38IRP58qASvHmTjTyG5Afky8YCdvkoGvZVLP1xJxr4wmo1keMoBMjWNgkY-_ZFNrp3cMxhM-GqocfMijD8saG-O264ueLUXu86jO1pdTMte5JvIowG8m1tVrUfle5GGMdnXhvu6bUNheIKuqrp4sOB1P374IvXJH8M4YBwaPx7LwJk_7_rGeDajqxstyfpz0AHgoe5JdFI7yvQW7rK5-sPpcJnatAPRiKJggDjLux7KHo3EWmHm7GoLeT36V9znYxvhHbQd4tHavaj2tIYdueDHWF5sr2-cGlfi-UjYmBvqx6D_zT7ECW8C2SzYdvS_eX-5fe1Z5r8zlieIAMfS6JbaZwPVMs2_RTBxnctxkl_nZ30j2DrThrVMCwgBjodj-d8WVKaXIDyA3lxRJHAPlFks3m5udP1hvMnmFY5HRSh284zSMtLPUdOp2J2EoMYo5JCOWdfZHbRs_mJoyzqg7g7Oei2m8H9nYxb7-QP8lHl1-vWxGNaJ9t-XXpsdMX4tMTBNw3cOEoSCi-ikiwg4VvyGN_MTx2aHSVLBd6rDlg9H2WuNm30jiI6Tfwb_0m74kFK5jarsvW2xFoa3uJ3mQzavbA1h2tpqxHsnEpAuE2CASePRVwwJCdl_lms3pLB97qmn0Qtzh9FkzPVqmMM3Xdj0DveSmYNAyTe_gmvl05m1Oz-9SXTPPripU4Ko0yh4NjrMuEjKm6bcQNlIPBkRGr8FyUplzwL0Gemcnqk0k2N2nESezWdC1VmCP9hUeP5Ft7xpWW9maZTwu96IPZpBFx0wrGPZsOg0UWCl04nseubnePuF0vajF5U0BXqd7KrVkDMzecLb4bGbVqkTQsHAsCkAgTicQnR8nifJKTWA")
 adobe_client_secret = os.getenv("ADOBE_CLIENT_SECRET")
 adobe_access_token = " "
 adobe_api_key = os.getenv("ADOBE_API_KEY")
@@ -21,10 +21,12 @@ urls = [
     "https://image.adobe.io/pie/psdService/actionJSON"
 ]
 
-home_team_primary = [50, 20, 100]
+home_team_primary = [50, 255, 100]
 home_team_secondary = [40, 70, 247]
-away_team_primary = [30, 57, 70]
-away_team_secondary = [20, 80, 40]
+away_team_primary = [255, 57, 70]
+away_team_secondary = [20, 80, 255]
+
+
 
 class WebCrawler:
     def __init__(self, first_link, num):
@@ -159,91 +161,7 @@ if __name__ == "__main__":
         print(f"Error generating Adobe access token: {e}")
         exit(1)
 
-    # 2) Generate a Dropbox download link from Gameday Generator/Base.psd
-    download_curl_command = [
-        'curl',
-        '-X', 'POST',
-        'https://api.dropboxapi.com/2/files/get_temporary_link',
-        '--header', f'Authorization: Bearer {dropbox_access_token}',
-        '--header', 'Content-Type: application/json',
-        '--data', '{"path":"/Gameday Generator/Base.psd"}'
-    ]
-    try:
-        download_output = subprocess.check_output(download_curl_command)
-        download_output_json = json.loads(download_output)
-        download_link = download_output_json.get('link')
-    except subprocess.CalledProcessError as e:
-        print(f"Error generating download link: {e}")
-        exit(1)
-
-    # 3) Generate a Dropbox upload link from Gameday Generator/Base1.psd
-    upload_curl_command = [
-        'curl',
-        '-X', 'POST',
-        'https://api.dropboxapi.com/2/files/get_temporary_upload_link',
-        '--header', f'Authorization: Bearer {dropbox_access_token}',
-        '--header', 'Content-Type: application/json',
-        '--data', '{"commit_info":{"path":"/Gameday Generator/Base1.psd","mode":{".tag":"overwrite"}}}'
-    ]
-    try:
-        upload_output = subprocess.check_output(upload_curl_command)
-        upload_output_json = json.loads(upload_output)
-        upload_link = upload_output_json.get('link')
-    except subprocess.CalledProcessError as e:
-        print(f"Error generating upload link: {e}")
-        exit(1)
-
-    # 4) Read a file called text_request.json and overwrite the file with the same things as request.json, minus the things from actionJSON
-    try:
-        with open('C:\\Users\\ahmad\\OneDrive\\Gameday Generator\\text_request.json', 'r') as file:
-            data = json.load(file)
-        # Update the inputs and outputs fields
-        for layer in data["options"]["layers"]:
-            if layer["name"] == "Away Position":
-                layer["text"]["contents"] = team_crawler.seeding_away
-            if layer["name"] == "Home Position":
-                layer["text"]["contents"] = team_crawler.seeding_home
-            if layer["name"] == "Away Record":
-                layer["text"]["contents"] = team_crawler.record_away
-            if layer["name"] == "Home Record":
-                layer["text"]["contents"] = team_crawler.record_home
-            if layer["name"] == "Away Team":
-                layer["text"]["contents"] = team_crawler.away_team
-            if layer["name"] == "Home Team":
-                layer["text"]["contents"] = team_crawler.home_team
-            if layer["name"] == "Date":
-                layer["text"]["contents"] = team_crawler.formatted_date
-            if layer["name"] == "Time":
-                layer["text"]["contents"] = team_crawler.time_data
-        for input_layer in data["inputs"]:
-            if input_layer["href"] == "download_link":  # Check if href is "download_link"
-                input_layer["href"] = download_link  # Assign the text_download_link value to href
-        for output_layer in data["outputs"]:
-            if output_layer["href"] == "upload_link":  # Check if href is "upload_link"
-                output_layer["href"] = upload_link  # Assign the text_upload_link value to href
-        with open('C:\\Users\\ahmad\\OneDrive\\Gameday Generator\\NEW_text_request.json', 'w') as file:
-            json.dump(data, file, indent=4)
-    except Exception as e:
-        print(f"Error modifying data: {e}")
-        exit(1)
-
-    # 5) Make a curl request using /psdService/text with all the previously allocated data
-    text_curl_command = [
-        'curl',
-        '-X', 'POST',
-        'https://image.adobe.io/pie/psdService/text',
-        '--header', f'Authorization: Bearer {adobe_access_token}',
-        '--header', f'x-api-key: {adobe_api_key}',
-        '--header', 'Content-Type: application/json',
-        '--data', json.dumps(data)  # Convert data to JSON string
-    ]
-    try:
-        text_response = subprocess.check_output(text_curl_command)
-        print("Text API Response:", text_response.decode())  # Print the output
-    except subprocess.CalledProcessError as e:
-        print(f"Error executing cURL command for editing text: {e}")
-
-    # 6) Generate another Dropbox download link, this time for Gameday Generator/Base1.psd
+    # 2) Generate a Dropbox download link from Gameday Generator/Base.psd and font
     download_curl_command = [
         'curl',
         '-X', 'POST',
@@ -259,7 +177,24 @@ if __name__ == "__main__":
     except subprocess.CalledProcessError as e:
         print(f"Error generating download link: {e}")
         exit(1)
-    # 7) Generate ANOTHER Dropbox upload link from Gameday Generator/Base1.psd
+
+    download_font_curl_command = [
+        'curl',
+        '-X', 'POST',
+        'https://api.dropboxapi.com/2/files/get_temporary_link',
+        '--header', f'Authorization: Bearer {dropbox_access_token}',
+        '--header', 'Content-Type: application/json',
+        '--data', '{"path":"/Lovelo/Lovelo-Black.ttf"}'
+    ]
+    try:
+        download_output = subprocess.check_output(download_font_curl_command)
+        download_output_json = json.loads(download_output)
+        download_font_link = download_output_json.get('link')
+    except subprocess.CalledProcessError as e:
+        print(f"Error generating download link: {e}")
+        exit(1)
+
+    # 3) Generate a Dropbox upload link from Gameday Generator/Base1.psd
     upload_curl_command = [
         'curl',
         '-X', 'POST',
@@ -333,6 +268,7 @@ if __name__ == "__main__":
             select_action = data["options"]["actionJSON"][i]
             set_action = data["options"]["actionJSON"][i + 1]
 
+
         with open('C:\\Users\\ahmad\\OneDrive\\Gameday Generator\\NEW_actions_request.json', 'w') as file:
             json.dump(data, file, indent=4)
     except Exception as e:
@@ -355,6 +291,100 @@ if __name__ == "__main__":
     except subprocess.CalledProcessError as e:
         print(f"Error executing cURL command for performing actions on JSON data: {e}")
 
+
+    
+
+    # 6) Generate another Dropbox download link, this time for Gameday Generator/Base1.psd
+    time.sleep(5);
+    download_curl_command = [
+        'curl',
+        '-X', 'POST',
+        'https://api.dropboxapi.com/2/files/get_temporary_link',
+        '--header', f'Authorization: Bearer {dropbox_access_token}',
+        '--header', 'Content-Type: application/json',
+        '--data', '{"path":"/Gameday Generator/Base1.psd"}'
+    ]
+    try:
+        download_output = subprocess.check_output(download_curl_command)
+        download_output_json = json.loads(download_output)
+        download_link = download_output_json.get('link')
+    except subprocess.CalledProcessError as e:
+        print(f"Error generating download link: {e}")
+        exit(1)
+    # 7) Generate ANOTHER Dropbox upload link from Gameday Generator/Base1.psd
+    upload_curl_command = [
+        'curl',
+        '-X', 'POST',
+        'https://api.dropboxapi.com/2/files/get_temporary_upload_link',
+        '--header', f'Authorization: Bearer {dropbox_access_token}',
+        '--header', 'Content-Type: application/json',
+        '--data', '{"commit_info":{"path":"/Gameday Generator/Base1.psd","mode":{".tag":"overwrite"}}}'
+    ]
+    try:
+        upload_output = subprocess.check_output(upload_curl_command)
+        upload_output_json = json.loads(upload_output)
+        upload_link = upload_output_json.get('link')
+    except subprocess.CalledProcessError as e:
+        print(f"Error generating upload link: {e}")
+        exit(1)
+
+
+    # 4) Read a file called text_request.json and overwrite the file with the same things as request.json, minus the things from actionJSON
+    try:
+        with open('C:\\Users\\ahmad\\OneDrive\\Gameday Generator\\text_request.json', 'r') as file:
+            data = json.load(file)
+        # Update the inputs and outputs fields
+        for layer in data["options"]["layers"]:
+            if layer["name"] == "Away Position":
+                layer["text"]["contents"] = team_crawler.seeding_away
+            if layer["name"] == "Home Position":
+                layer["text"]["contents"] = team_crawler.seeding_home
+            if layer["name"] == "Away Record":
+                layer["text"]["contents"] = team_crawler.record_away
+            if layer["name"] == "Home Record":
+                layer["text"]["contents"] = team_crawler.record_home
+            if layer["name"] == "Away Team":
+                layer["text"]["contents"] = team_crawler.away_team
+            if layer["name"] == "Home Team":
+                layer["text"]["contents"] = team_crawler.home_team
+            if layer["name"] == "Date":
+                layer["text"]["contents"] = team_crawler.formatted_date
+            if layer["name"] == "Time":
+                layer["text"]["contents"] = team_crawler.time_data
+        for input_layer in data["inputs"]:
+            if input_layer["href"] == "download_link":  # Check if href is "download_link"
+                input_layer["href"] = download_link  # Assign the text_download_link value to href
+        for output_layer in data["outputs"]:
+            if output_layer["href"] == "upload_link":  # Check if href is "upload_link"
+                output_layer["href"] = upload_link  # Assign the text_upload_link value to href
+        for font_layer in data["options"]["fonts"]:
+            if font_layer["href"] == "font_link":  # Check if href is "font_download_link"
+                font_layer["href"] = download_font_link  # Assign the text_download_link value to href
+
+        with open('C:\\Users\\ahmad\\OneDrive\\Gameday Generator\\NEW_text_request.json', 'w') as file:
+            json.dump(data, file, indent=4)
+        
+    except Exception as e:
+        print(f"Error modifying data: {e}")
+        exit(1)
+
+    # 5) Make a curl request using /psdService/text with all the previously allocated data
+    text_curl_command = [
+        'curl',
+        '-X', 'POST',
+        'https://image.adobe.io/pie/psdService/text',
+        '--header', f'Authorization: Bearer {adobe_access_token}',
+        '--header', f'x-api-key: {adobe_api_key}',
+        '--header', 'Content-Type: application/json',
+        '--data', json.dumps(data)  # Convert data to JSON string
+    ]
+    try:
+        text_response = subprocess.check_output(text_curl_command)
+        print("Text API Response:", text_response.decode())  # Print the output
+    except subprocess.CalledProcessError as e:
+        print(f"Error executing cURL command for editing text: {e}")
+        
+    
 
                
 
