@@ -10,7 +10,7 @@ import subprocess
 import os
 
 # Define the Dropbox access token
-dropbox_access_token = ("uat.AE00TcahKBhShtqopF6Qp-eMYIKrlGxLeM8FyCXyptJO0py_R-W3BxrDxhTeSudtZKVQkYW0X5Si77oNw3FjOpp-MjHhOWkwc88s8mf8SyesYkIZ3yfDGYTVj7FY_ErUcpa5dN_MuYghqx2LFTOvSWSUqedKPGppiVKspt9OZSbu5rJk7BYX6tv-wQB9M0iy7WmOOrwWDWE3BhEJTYC_aO7uvuzyz52fVfRhDntN-ehk9iDHJJmpcacYy66gppuf7Zszy1yJoB-fXcw44As9n9vCXKXeJTtLerf-0ZA3CMNKIc1fFRzlDnqs36AW5FPtdTjCgi6Gb_vuVrXGueau5SX4Y-59IazgPaMSC0G_cU643PQyfAZPRhuAaKT9njKiuEMmvOyY9Fal6XHzKRdQ5miEWKV4rYszsj2K3_eGEnSELrEle-p3RRe5OWK0AzYBfB0vf_Zu1VpmzFSp3ADXPyPE3D_4CQK6lOw7oTpSDu4KD4iF7nvBdNeYUYAMBbbQWS4ucAOWozRBX6oJ0joqWWI4-3OVA4roOakO0-onVYz3LCX-9Ckt8hoJeakslEIc00WyTodlBcP6MrMxdfZfQ6CQKzAKExR4o-Y08DqXYYMi18yS12Ubz2u5DuR1r7AKg84FG1YgocO24fQ4BJCvwN5Vr2232643FF0a5A6KW-m4TMDZPclgeC1LkLw9zUx9zyVQTpTXxICQtX5veuJv5LtvgeWpAEd7W1G2DO5237R0Dnlr_NmUo0WqIHbDFrCEv7XGsFHbuKI_2yngF7u8OyoxTH_SPXQ2W6CjicGnUAjb6hgWKk1yGF0MnRReJxWH3O3opbUxzNICE2pBPuG9XstrUu8wza2yWa5mMOykPVShEmENlAkrSEjN7_aBXDup8RB0yqrnJzPtp5GC7UeRtT04y6AkyDQIIKLDUobcAGFP6IQ9XJWhPNpuHivS0X0lCL7GKGrJy0J1BPp855Wlh46BauIJly9TSGzlpEGFQ9X4l-ECrP83DVtTK1ZWdS87pYscjKuEDPBLUgL9DeEAkj1xrH-shSRDq_eWHe7Zr28lBr_mWYHp2OeS83ZbixiZwN63EPQhEwPv-mIa9oEtdvDyPjbj0fPirhxXBauL039G5WTlKdvPVFcK-D7YqKlwcWJ-xOr_kGtBxQFuaCzQZOgu12EtCMr8e7aV7LLHu1IRcPDLR7jtNoQ-ysvAAW-XbgIndS-9fY5iqzhCOLIdJe9AXJ8waLKHH3f7fNS9OhtFUD-unBcCArf9smX7m4JN276k-zHkEJFoiVidRI6Uk4e1eGiumeCX78YkBRg6pFKprALoHV4EWgt1cnLGlKzJAsvuuFuEdtHvfXSgQjR6vvflJD58N_Vcy8OEAqyqx4HeVi6h51078nZ29iP8pi4eehKLj9oybdkf0AVOjPk48LJWfJiRv6kH5vMBFinm8-CJuQ")
+dropbox_access_token = ("uat.AE3pV6CCskHYvVPlujvn89BU34WswYIIfZ8EsqCX8w3F3PsxF5YKjC3geOm80Gn0MbnODsZqySz818nOkfuN5_JdIHQZRrjvHVuGURDdLZk_av39sqzsWR4wfsptmeBxdu0dRLGpSaOvx1xvXh-LTdAZ8vNYdmH1OwZV3vXMyEvvpTiii5tz0qagw3jfyNNdn1W73bsu6uuXYypchiYGInN8JJ8NQ7DUHB0xbpFuBc8EGlAHjyna3spYKbgNaJ__ldA-TNoppdKjjX1VCIqIlVPFsUZgXJr9aq5izW3Ovnk-ns2lYiwletPCL3ZFGftOFG-RaAI5Iq79Noqbr6BLpOMQXH_5Qba7SX1UGGEwWRPxtJWL7R2E8gkNM5getBcxbTdKwH9rVIHHHRHQX08SbaJP4US4DJPL8ypbOrLZ84uxb86kL9e2h-NXB4qecKwHD3mPNZMJ-8-MDXxfHj9eKWpHx9Tpc2vHSAQ75XBSdxdth2J-kl482_zk4VhXPQZJ7tPXS4whPOGL4vIoWgHa2Mp54XMsXlvdoUPP5rbYfHFzgC-HP6-ewlWM7b7DOB6Vv1NN30sI7_XQTgb3Pec7-EDHJQL6g12-D_Ii92IWvfkMOFru9i8HQqI3Pq4yAV41zOkxzQJwA6k-lOHPFLOPYINGVAPKEP5KjKW8h4BBcBRHHg9CcFscBuVrIE-ttxR20gS8hW2OAWgT8krTlHp73t6s8Erkg_JcOqhkfGIzul00gpLljo-sc6-TpCEBlNoR9bsK2Mfo7qTwa3uOsHkP7RHp6LePoE0i3893cuoLJ-fkDZPnquCAUpFL4jlDHE4OkCb8GhK2IMZp43v1LgS-YH9mzHdqN9IFr3gLOxJ1Pr7x1GTAHQkvT0Ls9b9FMUWBXefpEVMA3aHzLlPjxTa4W6HxaU17KulPhMr-qtp0H38PRh-WrsZ9LfSsQYHlo6UD6m6ZrGaADjT6e1JKl9K45BMFdZkHmlZ3yliA0B_cEFmlhBKIXNIvpYv6MvboTfB0l3QLj_3helFpwJEp0bUKZX_cDiZpV_k6f87EzxmJgtU20nQQmc6n-yGAlxejVnA5twLVdOAg6w5EsTUbbcf2lUc2JJvsYO1c6NJrmrM-g0PbSoQwHb8cshsN6C4q1lNOToKnKqa7mdB_mzOmS12y4fs94SqK4JPyiokAzK1qhTCUAHuM5NAay43kDeXLchQUNmkDdZiu-bTD4PLi5p2zA6c4nFkhtghFzdyNQ9sojWH6HRqkRjhaciwEGl6A9guc2RypFdLsmGy9dCl_jKZUs638u9_R0feZuLKoVksM8kqlCMJf4S8l89WCx2G2nVstEGiFNArv8JBA1ldIkGa2xCgxFhbfOnrzztA4sfPkXL9cPiUveBmShAVPcciYgEsudQj8IlwwzLyiiEWfoHHEKNx4M-L5Zr7RxuCp_-quwc4NKw")
 adobe_client_secret = os.getenv("ADOBE_CLIENT_SECRET")
 adobe_access_token = " "
 adobe_api_key = os.getenv("ADOBE_API_KEY")
@@ -21,10 +21,10 @@ urls = [
     "https://image.adobe.io/pie/psdService/actionJSON"
 ]
 
-home_team_primary = [199, 81, 239]
-home_team_secondary = [65, 37, 171]
-away_team_primary = [250, 124, 88]
-away_team_secondary = [143, 15, 211]
+home_team_primary = [255, 30, 239]
+home_team_secondary = [65, 137, 171]
+away_team_primary = [250, 24, 188]
+away_team_secondary = [13, 15, 211]
 
 
 
@@ -211,34 +211,85 @@ if __name__ == "__main__":
         print(f"Error generating upload link: {e}")
         exit(1)
     # 8) Read a file called actions_request.json and overwrite the file with the same things as request.json minus the things from the text editing part
+    team_crawler.last_5_games_results_home = list(team_crawler.last_5_games_results_home)
+    team_crawler.last_5_games_results_away = list(team_crawler.last_5_games_results_away)
     try:
         with open('C:\\Users\\ahmad\\OneDrive\\Gameday Generator\\actions_request.json', 'r') as file:
             data = json.load(file)
+             
+   
+      
+        layer_name = None  # Initialize layer_name
+        for i in range(0, len(data["options"]["actionJSON"]), 2):
+            select_action = data["options"]["actionJSON"][i]
+            set_action = data["options"]["actionJSON"][i+1]
+                    
+            # Get the layer name from the select action
+            layer_name = select_action["_target"][0]["_name"]
+    
 
-            for i in range(0, len(data["options"]["actionJSON"]), 2):
-                    select_action = data["options"]["actionJSON"][i]
-                    set_action = data["options"]["actionJSON"][i+1]
-                    
-                    # Get the layer name from the select action
-                    layer_name = select_action["_target"][0]["_name"]
-                    
-                    # Update the color values in the set action based on the layer name
-                    if layer_name == "Home Team Primary":
+            # Update the color values in the set action based on the layer name
+            if layer_name == "W/L (1) Home" and team_crawler.last_5_games_results_home[0] != "L":
                         set_action["to"]["color"]["red"] = home_team_primary[0]
                         set_action["to"]["color"]["grain"] = home_team_primary[1]
                         set_action["to"]["color"]["blue"] = home_team_primary[2]
-                    if layer_name == "Home Team Secondary":
-                        set_action["to"]["color"]["red"] = home_team_secondary[0]
-                        set_action["to"]["color"]["grain"] = home_team_secondary[1]
-                        set_action["to"]["color"]["blue"] = home_team_secondary[2]
-                    if layer_name == "Away Team Primary":
+            if layer_name == "W/L (2) Home" and team_crawler.last_5_games_results_home[1] != "L":
+                        set_action["to"]["color"]["red"] = home_team_primary[0]
+                        set_action["to"]["color"]["grain"] = home_team_primary[1]
+                        set_action["to"]["color"]["blue"] = home_team_primary[2]
+            if layer_name == "W/L (3) Home" and team_crawler.last_5_games_results_home[2] != "L":
+                        set_action["to"]["color"]["red"] = home_team_primary[0]
+                        set_action["to"]["color"]["grain"] = home_team_primary[1]
+                        set_action["to"]["color"]["blue"] = home_team_primary[2]
+            if layer_name == "W/L (4) Home" and team_crawler.last_5_games_results_home[3] != "L":
+                        set_action["to"]["color"]["red"] = home_team_primary[0]
+                        set_action["to"]["color"]["grain"] = home_team_primary[1]
+                        set_action["to"]["color"]["blue"] = home_team_primary[2]
+            if layer_name == "W/L (5) Home" and team_crawler.last_5_games_results_home[4] != "L":
+                        set_action["to"]["color"]["red"] = home_team_primary[0]
+                        set_action["to"]["color"]["grain"] = home_team_primary[1]
+                        set_action["to"]["color"]["blue"] = home_team_primary[2]
+            if layer_name == "W/L (1) Away" and team_crawler.last_5_games_results_away[0] != "L":
                         set_action["to"]["color"]["red"] = away_team_primary[0]
                         set_action["to"]["color"]["grain"] = away_team_primary[1]
                         set_action["to"]["color"]["blue"] = away_team_primary[2]
-                    if layer_name == "Away Team Secondary":
+            if layer_name == "W/L (2) Away" and team_crawler.last_5_games_results_away[1] != "L":
+                        set_action["to"]["color"]["red"] = away_team_primary[0]
+                        set_action["to"]["color"]["grain"] = away_team_primary[1]
+                        set_action["to"]["color"]["blue"] = away_team_primary[2]
+            if layer_name == "W/L (3) Away" and team_crawler.last_5_games_results_away[2] != "L":
+                        set_action["to"]["color"]["red"] = away_team_primary[0]
+                        set_action["to"]["color"]["grain"] = away_team_primary[1]
+                        set_action["to"]["color"]["blue"] = away_team_primary[2]
+            if layer_name == "W/L (4) Away" and team_crawler.last_5_games_results_away[3] != "L":
+                        set_action["to"]["color"]["red"] = away_team_primary[0]
+                        set_action["to"]["color"]["grain"] = away_team_primary[1]
+                        set_action["to"]["color"]["blue"] = away_team_primary[2]
+            if layer_name == "W/L (5) Away" and team_crawler.last_5_games_results_away[4] != "L":
+                        set_action["to"]["color"]["red"] = away_team_primary[0]
+                        set_action["to"]["color"]["grain"] = away_team_primary[1]
+                        set_action["to"]["color"]["blue"] = away_team_primary[2]
+                
+                            
+            if layer_name == "Home Team Primary":
+                        set_action["to"]["color"]["red"] = home_team_primary[0]
+                        set_action["to"]["color"]["grain"] = home_team_primary[1]
+                        set_action["to"]["color"]["blue"] = home_team_primary[2]
+            if layer_name == "Home Team Secondary":
+                        set_action["to"]["color"]["red"] = home_team_secondary[0]
+                        set_action["to"]["color"]["grain"] = home_team_secondary[1]
+                        set_action["to"]["color"]["blue"] = home_team_secondary[2]
+            if layer_name == "Away Team Primary":
+                        set_action["to"]["color"]["red"] = away_team_primary[0]
+                        set_action["to"]["color"]["grain"] = away_team_primary[1]
+                        set_action["to"]["color"]["blue"] = away_team_primary[2]
+            if layer_name == "Away Team Secondary":
                         set_action["to"]["color"]["red"] = away_team_secondary[0]
                         set_action["to"]["color"]["grain"] = away_team_secondary[1]
                         set_action["to"]["color"]["blue"] = away_team_secondary[2]
+
+
+
 
 
         for i in range(len(data["options"]["actionJSON"])):
@@ -319,11 +370,24 @@ if __name__ == "__main__":
 
 
     # 4) Read a file called text_request.json and overwrite the file with the same things as request.json, minus the things from actionJSON
+
+    
+
+   
+
+
+
+
     try:
         with open('C:\\Users\\ahmad\\OneDrive\\Gameday Generator\\text_request.json', 'r') as file:
             data = json.load(file)
         # Update the inputs and outputs fields
         for layer in data["options"]["layers"]:
+            for i in range(1, 6):  # for each of the last 5 games
+                if layer["name"] == f"Game {i} Home":
+                    layer["text"]["contents"] = team_crawler.last_5_games_results_home[i-1]
+                if layer["name"] == f"Game {i} Away":
+                    layer["text"]["contents"] = team_crawler.last_5_games_results_away[i-1]
             if layer["name"] == "Away Position":
                 layer["text"]["contents"] = team_crawler.seeding_away
             if layer["name"] == "Home Position":
@@ -485,4 +549,3 @@ if __name__ == "__main__":
     
 
                
-
