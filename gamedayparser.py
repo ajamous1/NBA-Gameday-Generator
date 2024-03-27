@@ -227,48 +227,15 @@ if __name__ == "__main__":
             # Get the layer name from the select action
             layer_name = select_action["_target"][0]["_name"]
     
-
+            for i in range(1, 6):
             # Update the color values in the set action based on the layer name
-            if layer_name == "W/L (1) Home" and team_crawler.last_5_games_results_home[0] != "L":
-                        set_action["to"]["color"]["red"] = home_team_primary[0]
-                        set_action["to"]["color"]["grain"] = home_team_primary[1]
-                        set_action["to"]["color"]["blue"] = home_team_primary[2]
-            if layer_name == "W/L (2) Home" and team_crawler.last_5_games_results_home[1] != "L":
-                        set_action["to"]["color"]["red"] = home_team_primary[0]
-                        set_action["to"]["color"]["grain"] = home_team_primary[1]
-                        set_action["to"]["color"]["blue"] = home_team_primary[2]
-            if layer_name == "W/L (3) Home" and team_crawler.last_5_games_results_home[2] != "L":
-                        set_action["to"]["color"]["red"] = home_team_primary[0]
-                        set_action["to"]["color"]["grain"] = home_team_primary[1]
-                        set_action["to"]["color"]["blue"] = home_team_primary[2]
-            if layer_name == "W/L (4) Home" and team_crawler.last_5_games_results_home[3] != "L":
-                        set_action["to"]["color"]["red"] = home_team_primary[0]
-                        set_action["to"]["color"]["grain"] = home_team_primary[1]
-                        set_action["to"]["color"]["blue"] = home_team_primary[2]
-            if layer_name == "W/L (5) Home" and team_crawler.last_5_games_results_home[4] != "L":
-                        set_action["to"]["color"]["red"] = home_team_primary[0]
-                        set_action["to"]["color"]["grain"] = home_team_primary[1]
-                        set_action["to"]["color"]["blue"] = home_team_primary[2]
-            if layer_name == "W/L (1) Away" and team_crawler.last_5_games_results_away[0] != "L":
-                        set_action["to"]["color"]["red"] = away_team_primary[0]
-                        set_action["to"]["color"]["grain"] = away_team_primary[1]
-                        set_action["to"]["color"]["blue"] = away_team_primary[2]
-            if layer_name == "W/L (2) Away" and team_crawler.last_5_games_results_away[1] != "L":
-                        set_action["to"]["color"]["red"] = away_team_primary[0]
-                        set_action["to"]["color"]["grain"] = away_team_primary[1]
-                        set_action["to"]["color"]["blue"] = away_team_primary[2]
-            if layer_name == "W/L (3) Away" and team_crawler.last_5_games_results_away[2] != "L":
-                        set_action["to"]["color"]["red"] = away_team_primary[0]
-                        set_action["to"]["color"]["grain"] = away_team_primary[1]
-                        set_action["to"]["color"]["blue"] = away_team_primary[2]
-            if layer_name == "W/L (4) Away" and team_crawler.last_5_games_results_away[3] != "L":
-                        set_action["to"]["color"]["red"] = away_team_primary[0]
-                        set_action["to"]["color"]["grain"] = away_team_primary[1]
-                        set_action["to"]["color"]["blue"] = away_team_primary[2]
-            if layer_name == "W/L (5) Away" and team_crawler.last_5_games_results_away[4] != "L":
-                        set_action["to"]["color"]["red"] = away_team_primary[0]
-                        set_action["to"]["color"]["grain"] = away_team_primary[1]
-                        set_action["to"]["color"]["blue"] = away_team_primary[2]
+                if layer_name == f"W/L {i} Home" and team_crawler.last_5_games_results_home[i-1] == "W":
+                            set_action["to"]["color"]["red"] = home_team_primary[0]
+                            set_action["to"]["color"]["grain"] = home_team_primary[1]
+                if layer_name == f"W/L {i} Away" and team_crawler.last_5_games_results_away[i-1] == "W":
+                            set_action["to"]["color"]["red"] = away_team_primary[0]
+                            set_action["to"]["color"]["grain"] = away_team_primary[1]
+                            set_action["to"]["color"]["blue"] = away_team_primary[2]
                 
                             
             if layer_name == "Home Team Primary":
@@ -307,13 +274,14 @@ if __name__ == "__main__":
                             color_stop["color"]["red"] = away_team_secondary[0]
                             color_stop["color"]["grain"] = away_team_secondary[1]
                             color_stop["color"]["blue"] = away_team_secondary[2]
+                            
         for input_layer in data["inputs"]:
-            if input_layer["href"] == "download_link":  # Check if href is "download_link"
-                input_layer["href"] = download_link  # Assign the download_link value to href
+            if input_layer["href"] == "download_link": 
+                input_layer["href"] = download_link  
 
         for output_layer in data["outputs"]:
-            if output_layer["href"] == "upload_link":  # Check if href is "upload_link"
-                output_layer["href"] = upload_link  # Assign the upload_link value to href
+            if output_layer["href"] == "upload_link": 
+                output_layer["href"] = upload_link  
 
         for i in range(0, len(data["options"]["actionJSON"]), 2):
             select_action = data["options"]["actionJSON"][i]
