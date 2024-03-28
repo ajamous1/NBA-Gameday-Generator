@@ -97,10 +97,10 @@ class WebCrawler:
             nba_colors = json.load(f)
         # Assign the appropriate colors
         # Assign the appropriate colors
-        home_team_primary = nba_colors[self.home_team.title()][home_jersey.title()]["first_color"]
-        home_team_secondary = nba_colors[self.home_team.title()][home_jersey.title()]["second_color"]
-        away_team_primary = nba_colors[self.away_team.title()][away_jersey.title()]["first_color"]
-        away_team_secondary = nba_colors[self.away_team.title()][away_jersey.title()]["second_color"]
+        home_team_primary = nba_colors[self.home_team.title()][home_jersey]["first_color"]
+        home_team_secondary = nba_colors[self.home_team.title()][home_jersey]["second_color"]
+        away_team_primary = nba_colors[self.away_team.title()][away_jersey]["first_color"]
+        away_team_secondary = nba_colors[self.away_team.title()][away_jersey]["second_color"]
         print(home_team_primary)
         print(home_team_secondary)
         print(away_team_primary)
@@ -469,8 +469,12 @@ if __name__ == "__main__":
         print("Text API Response:", text_response.decode())  # Print the output
     except subprocess.CalledProcessError as e:
         print(f"Error executing cURL command for editing text: {e}")
-    home_team_path = f'/team_logos/{team_crawler.home_team.lower().replace(" ", "")}.png'
-    away_team_path = f'/team_logos/{team_crawler.away_team.lower().replace(" ", "")}.png'
+    if team_crawler.home_jersey == "Association Edition" or team_crawler.home_jersey == "Icon Edition":
+        team_crawler.home_jersey == "Default"
+    if team_crawler.away_jersey == "Association Edition" or team_crawler.away_jersey == "Icon Edition":
+        team_crawler.away_jersey == "Default"
+    home_team_path = f'/team_logos/{team_crawler.home_jersey}/{team_crawler.home_team.lower().replace(" ", "")}.png'
+    away_team_path = f'/team_logos/{team_crawler.away_jersey}/{team_crawler.away_team.lower().replace(" ", "")}.png'
     time.sleep(10)
     download_curl_command = [
         'curl',
