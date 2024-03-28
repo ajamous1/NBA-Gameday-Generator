@@ -56,7 +56,20 @@ class WebCrawler:
             print(f"Error setting up Chromedriver: {e}")
             exit(1)
  
+    def setup_webdriver(self):
+        try:
+            options = Options()
+            options.add_argument('--headless')
+            driver_path = r'C:\Users\ahmad\Downloads\chromedriver-win64\chromedriver-win64\chromedriver.exe'
+            return webdriver.Chrome(executable_path=driver_path, options=options)
+        except WebDriverException as e:
+            print(f"Error setting up Chromedriver: {e}")
+            exit(1)
+ 
     def crawl(self):
+        global home_team_primary, home_team_secondary, away_team_primary, away_team_secondary
+        
+
         self.driver.get(self.first_link)
         time.sleep(2)
         soup = BeautifulSoup(self.driver.page_source, 'html.parser')
@@ -74,13 +87,31 @@ class WebCrawler:
         self.home_team = team_names.replace(self.away_team, "").strip()
         formatted_date = self.format_date(raw_date)
         self.formatted_date = formatted_date
-        
-
-        # Fetching additional data
+        home_jersey, away_jersey = jerseys.split(', ')
         self.record_home, self.seeding_home = self.get_record_and_seeding(self.home_team)
         self.record_away, self.seeding_away = self.get_record_and_seeding(self.away_team)
         self.last_5_games_results_home = self.get_last_5_games_results(self.home_team)
-        self.last_5_games_results_away = self.get_last_5_games_results(self.away_team)
+        self.last_5_games_results_away = self.get_last_5_games_results(self.away_team)4
+
+        with open(r"C:\Users\ahmad\NBA-Gameday-Generator\nba_colors.json", 'r') as f:
+            nba_colors = json.load(f)
+        # Assign the appropriate colors
+        # Assign the appropriate colors
+        home_team_primary = nba_colors[self.home_team.title()][home_jersey.title()]["first_color"]
+        home_team_secondary = nba_colors[self.home_team.title()][home_jersey.title()]["second_color"]
+        away_team_primary = nba_colors[self.away_team.title()][away_jersey.title()]["first_color"]
+        away_team_secondary = nba_colors[self.away_team.title()][away_jersey.title()]["second_color"]
+        print(home_team_primary)
+        print(home_team_secondary)
+        print(away_team_primary)
+        print(away_team_secondary)
+
+
+        
+       
+
+     
+        
 
         # Output data for both teams
         self.process_and_output_data(self.home_team, self.away_team, jerseys, location, formatted_date, time_data)
@@ -227,15 +258,48 @@ if __name__ == "__main__":
             # Get the layer name from the select action
             layer_name = select_action["_target"][0]["_name"]
     
-            for i in range(1, 6):
+
             # Update the color values in the set action based on the layer name
-                if layer_name == f"W/L {i} Home" and team_crawler.last_5_games_results_home[i-1] == "W":
-                            set_action["to"]["color"]["red"] = home_team_primary[0]
-                            set_action["to"]["color"]["grain"] = home_team_primary[1]
-                if layer_name == f"W/L {i} Away" and team_crawler.last_5_games_results_away[i-1] == "W":
-                            set_action["to"]["color"]["red"] = away_team_primary[0]
-                            set_action["to"]["color"]["grain"] = away_team_primary[1]
-                            set_action["to"]["color"]["blue"] = away_team_primary[2]
+            if layer_name == "W/L (1) Home" and team_crawler.last_5_games_results_home[0] != "L":
+                        set_action["to"]["color"]["red"] = home_team_primary[0]
+                        set_action["to"]["color"]["grain"] = home_team_primary[1]
+                        set_action["to"]["color"]["blue"] = home_team_primary[2]
+            if layer_name == "W/L (2) Home" and team_crawler.last_5_games_results_home[1] != "L":
+                        set_action["to"]["color"]["red"] = home_team_primary[0]
+                        set_action["to"]["color"]["grain"] = home_team_primary[1]
+                        set_action["to"]["color"]["blue"] = home_team_primary[2]
+            if layer_name == "W/L (3) Home" and team_crawler.last_5_games_results_home[2] != "L":
+                        set_action["to"]["color"]["red"] = home_team_primary[0]
+                        set_action["to"]["color"]["grain"] = home_team_primary[1]
+                        set_action["to"]["color"]["blue"] = home_team_primary[2]
+            if layer_name == "W/L (4) Home" and team_crawler.last_5_games_results_home[3] != "L":
+                        set_action["to"]["color"]["red"] = home_team_primary[0]
+                        set_action["to"]["color"]["grain"] = home_team_primary[1]
+                        set_action["to"]["color"]["blue"] = home_team_primary[2]
+            if layer_name == "W/L (5) Home" and team_crawler.last_5_games_results_home[4] != "L":
+                        set_action["to"]["color"]["red"] = home_team_primary[0]
+                        set_action["to"]["color"]["grain"] = home_team_primary[1]
+                        set_action["to"]["color"]["blue"] = home_team_primary[2]
+            if layer_name == "W/L (1) Away" and team_crawler.last_5_games_results_away[0] != "L":
+                        set_action["to"]["color"]["red"] = away_team_primary[0]
+                        set_action["to"]["color"]["grain"] = away_team_primary[1]
+                        set_action["to"]["color"]["blue"] = away_team_primary[2]
+            if layer_name == "W/L (2) Away" and team_crawler.last_5_games_results_away[1] != "L":
+                        set_action["to"]["color"]["red"] = away_team_primary[0]
+                        set_action["to"]["color"]["grain"] = away_team_primary[1]
+                        set_action["to"]["color"]["blue"] = away_team_primary[2]
+            if layer_name == "W/L (3) Away" and team_crawler.last_5_games_results_away[2] != "L":
+                        set_action["to"]["color"]["red"] = away_team_primary[0]
+                        set_action["to"]["color"]["grain"] = away_team_primary[1]
+                        set_action["to"]["color"]["blue"] = away_team_primary[2]
+            if layer_name == "W/L (4) Away" and team_crawler.last_5_games_results_away[3] != "L":
+                        set_action["to"]["color"]["red"] = away_team_primary[0]
+                        set_action["to"]["color"]["grain"] = away_team_primary[1]
+                        set_action["to"]["color"]["blue"] = away_team_primary[2]
+            if layer_name == "W/L (5) Away" and team_crawler.last_5_games_results_away[4] != "L":
+                        set_action["to"]["color"]["red"] = away_team_primary[0]
+                        set_action["to"]["color"]["grain"] = away_team_primary[1]
+                        set_action["to"]["color"]["blue"] = away_team_primary[2]
                 
                             
             if layer_name == "Home Team Primary":
@@ -274,14 +338,13 @@ if __name__ == "__main__":
                             color_stop["color"]["red"] = away_team_secondary[0]
                             color_stop["color"]["grain"] = away_team_secondary[1]
                             color_stop["color"]["blue"] = away_team_secondary[2]
-                            
         for input_layer in data["inputs"]:
-            if input_layer["href"] == "download_link": 
-                input_layer["href"] = download_link  
+            if input_layer["href"] == "download_link":  # Check if href is "download_link"
+                input_layer["href"] = download_link  # Assign the download_link value to href
 
         for output_layer in data["outputs"]:
-            if output_layer["href"] == "upload_link": 
-                output_layer["href"] = upload_link  
+            if output_layer["href"] == "upload_link":  # Check if href is "upload_link"
+                output_layer["href"] = upload_link  # Assign the upload_link value to href
 
         for i in range(0, len(data["options"]["actionJSON"]), 2):
             select_action = data["options"]["actionJSON"][i]
