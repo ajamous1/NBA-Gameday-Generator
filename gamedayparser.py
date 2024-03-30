@@ -50,16 +50,6 @@ class WebCrawler:
         try:
             options = Options()
             options.add_argument('--headless')
-            driver_path = r"C:\Users\ahmad\Downloads\chromedriver-win64\chromedriver-win64\chromedriver.exe"
-            return webdriver.Chrome(executable_path=driver_path, options=options)
-        except WebDriverException as e:
-            print(f"Error setting up Chromedriver: {e}")
-            exit(1)
- 
-    def setup_webdriver(self):
-        try:
-            options = Options()
-            options.add_argument('--headless')
             driver_path = r'C:\Users\ahmad\Downloads\chromedriver-win64\chromedriver-win64\chromedriver.exe'
             return webdriver.Chrome(executable_path=driver_path, options=options)
         except WebDriverException as e:
@@ -87,15 +77,15 @@ class WebCrawler:
         self.home_team = team_names.replace(self.away_team, "").strip()
         formatted_date = self.format_date(raw_date)
         self.formatted_date = formatted_date
+        global home_jersey, away_jersey
         home_jersey, away_jersey = jerseys.split(', ')
         self.record_home, self.seeding_home = self.get_record_and_seeding(self.home_team)
         self.record_away, self.seeding_away = self.get_record_and_seeding(self.away_team)
         self.last_5_games_results_home = self.get_last_5_games_results(self.home_team)
-        self.last_5_games_results_away = self.get_last_5_games_results(self.away_team)4
+        self.last_5_games_results_away = self.get_last_5_games_results(self.away_team)
 
         with open(r"C:\Users\ahmad\NBA-Gameday-Generator\nba_colors.json", 'r') as f:
             nba_colors = json.load(f)
-        # Assign the appropriate colors
         # Assign the appropriate colors
         home_team_primary = nba_colors[self.home_team.title()][home_jersey]["first_color"]
         home_team_secondary = nba_colors[self.home_team.title()][home_jersey]["second_color"]
@@ -469,13 +459,17 @@ if __name__ == "__main__":
         print("Text API Response:", text_response.decode())  # Print the output
     except subprocess.CalledProcessError as e:
         print(f"Error executing cURL command for editing text: {e}")
-    if team_crawler.home_jersey == "Association Edition" or team_crawler.home_jersey == "Icon Edition":
-        team_crawler.home_jersey == "Default"
-    if team_crawler.away_jersey == "Association Edition" or team_crawler.away_jersey == "Icon Edition":
-        team_crawler.away_jersey == "Default"
-    home_team_path = f'/team_logos/{team_crawler.home_jersey}/{team_crawler.home_team.lower().replace(" ", "")}.png'
-    away_team_path = f'/team_logos/{team_crawler.away_jersey}/{team_crawler.away_team.lower().replace(" ", "")}.png'
-    time.sleep(10)
+    if home_jersey == "Association Edition" or home_jersey == "Icon Edition":
+        home_jersey = "Default"
+        print(home_jersey)
+    if away_jersey == "Association Edition" or away_jersey == "Icon Edition":
+        away_jersey = "Default"
+        print(away_jersey)
+    home_team_path = f'/team_logos/{home_jersey}/{team_crawler.home_team.lower().replace(" ", "")}.png'
+    away_team_path = f'/team_logos/{away_jersey}/{team_crawler.away_team.lower().replace(" ", "")}.png'
+    arena_path = f'/arenas/{team_crawler.home_team.lower().replace(" ", "")}.png'
+    
+    time.sleep(5)
     download_curl_command = [
         'curl',
         '-X', 'POST',
@@ -507,10 +501,11 @@ if __name__ == "__main__":
 
         download_output_json = json.loads(download_output)
         download_home_link = download_output_json.get('link')
+        print(download_home_link)
     except subprocess.CalledProcessError as e:
         print(f"Error generating download link: {e}")
         exit(1)
-    time.sleep(5)
+ 
     download_away_curl_command = [
         'curl',
         '-X', 'POST',
@@ -519,14 +514,33 @@ if __name__ == "__main__":
         '--header', 'Content-Type: application/json',
         '--data', f'{{"path":"{away_team_path}"}}'
     ]
-   
+
     try:
         download_output = subprocess.check_output(download_away_curl_command)
         download_output_json = json.loads(download_output)
         download_away_link = download_output_json.get('link')
+        print(download_away_link)
     except subprocess.CalledProcessError as e:
         print(f"Error generating download link: {e}")
         exit(1)
+
+    download_arena_curl_command = [
+        'curl',
+        '-X', 'POST',
+        'https://api.dropboxapi.com/2/files/get_temporary_link',
+        '--header', f'Authorization: Bearer {dropbox_access_token}',
+        '--header', 'Content-Type: application/json',
+        '--data', f'{{"path":"{arena_path}"}}'
+    ]
+    try:
+        download_output = subprocess.check_output(download_arena_curl_command)
+        download_output_json = json.loads(download_output)
+        download_arena_link = download_output_json.get('link')
+        print(download_arena_link)
+    except subprocess.CalledProcessError as e:
+        print(f"Error generating download link: {e}")
+        exit(1)
+    
      # 7) Generate ANOTHER Dropbox upload link from Gameday Generator/Base1.psd
     try:
         upload_output = subprocess.check_output(upload_curl_command)
@@ -548,6 +562,9 @@ if __name__ == "__main__":
                 layer["input"]["href"] = download_away_link
             if layer["name"] == "Away Logo":
                 layer["input"]["href"] = download_away_link
+            if layer["name"] == "Arena Logo":
+                layer["input"]["href"] = download_arena_link
+
                 
         for input_layer in data["inputs"]:
             if input_layer["href"] == "download_link":  # Check if href is "download_link"
