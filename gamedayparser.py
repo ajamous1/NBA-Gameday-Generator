@@ -8,23 +8,21 @@ import requests
 import json
 import subprocess
 import os
+import pytz
+from datetime import datetime, timedelta
 
-# Define the Dropbox access token
-dropbox_access_token = ("")
+dropbox_access_token = ("uat.AE6RgUUUnXn4HDUpY5ylsjvVEBu_gVR1SK2XX0ukxjf9BurTGWmyv9EJFGlYWZsDKYQuSivPkV69eHARVXgfOv-9JGJIQWyDLRY5FJfqIWUWnWidxZAB1q-R3FbKIpqEe7Kfxdbekxm3tw0MTHAhOLB5UyYWrJVt6ed9sy8yBUhjp6umCQ2JtACR8kfCIAPZAKZFhKSKsNIXQGctd3-qt_nHgJgAKQvWi9xWoi0ceX9Kgjcz6vNI5prRJZS8PAKh54BLVtnXhJ06QhAF5ADab2KYqgpj4NM70_dswrwsmvAW6QzEQUXOgrdvtqb76mQcwqmqwf7q4dk_p8bL_aPQJaEvtXgMzNJUKfmTZ0NvOzJwQQIJhFX6XslmOcjM3cJrzLK0IMPJC_1IroIn_7eMZXDnPc3_NK6sRZUDMou3rwKoFHDeAoHnoLR4bCj-lQIdmbzXn51dl9SML7S0ANCe8Cy4-UsYpEgYGnXTvbLsfGkbNLUuFyRCCUVGhazZFxG1L8lf0VqmbSTHTFqNavVMjDYNUavDU2JG9gkQDwsqgdH9p37HkmsSokkUttldlC_lsaZqX04apRJ6Pc_DmcU2dJ1I57je5Mn3oZo1KL1I08o6olhYz30sxC1vy5GhQolJgsR2k_mHjK-H8s5n3RL2ksRDm-NIgpXxvhn7rDOYLYTCNO93ra8C6QcvUrHNwLaxKjoB8secoAEjmrNCsKdRG9Ztj92-GuG_a7lokp_ZSfGwsq2l9i5Z4_P0BZuC07jeL7rTNDSVy2psgq8OMZFff_nhu-YfoSWB1e7YBJSb8VsE-GgBrD--oOwDljk2pAGOKVEr_M4kTOS5Wk8bteigcLfSTZBBkdatl2Tv25hqkX17EQusUYUYfmaUsOIv7RgUvDkcf5C9ahmbBXt0GiB7L3s0Lr1uvQa6IUgVKubMoC1nVAOnOHsIwDL8Y0QuKw7mfdls5-WbQtCUG-Iet_fAnPt2I36sj_drudf13OHFYvUcYMq3auW4uMR7-m8wU6Jai4brmRo6lVXBqRlKEdbPldbKYrFRpvETrtySOL0g06Lp9ZnMGo1DiYTw_mWw_WHwyWdRx84SskonWAd2UU5jhJRzr7t3Ph8kWLZa2kjrZ4JmIsL6w_AsrVys24p8jGRFmp-h5GKFZi81GZ-xVAdo_9aaIkZf8Lj1QvPPmlegdxXILDaCZI0KA_ymhAcC1rcNyvYL_1I9mOlLXPjI5JoLP5h5S7KgFJAj3uUndX2L0deelKstxvJBDtK3EOoeQoKvyMH8NlGj4QcEeGX52Kf_yuO-hLoBW4t7a70N4yU-t_yF4OVip6HbPMhvouoiAgHE860sPXKQsDrRbP6lqGDT4a9po6RYUfLGXqBCdJKEFKOr7o1zHIC8HvBQzYH6TiHZL7gIK0u0Bo0qnypbFA7eAKHN9NIfLeLzYeDlbtI4TA982Q")
 adobe_client_secret = os.getenv("ADOBE_CLIENT_SECRET")
 adobe_access_token = " "
 adobe_api_key = os.getenv("ADOBE_API_KEY")
 
-# Define API endpoints
-urls = [
-    "https://image.adobe.io/pie/psdService/text",
-    "https://image.adobe.io/pie/psdService/actionJSON"
-]
 
-home_team_primary = [255, 30, 239]
-home_team_secondary = [65, 137, 171]
-away_team_primary = [250, 24, 188]
-away_team_secondary = [13, 15, 211]
+
+
+home_team_primary = [0, 0, 0]
+home_team_secondary = [0, 0, 0]
+away_team_primary = [0, 0, 0]
+away_team_secondary = [0, 0, 0]
 
 
 
@@ -70,6 +68,8 @@ class WebCrawler:
         location = location_data.text.strip() if location_data else "N/A"
         self.time_data = soup.select_one('.MuiTypography-caption.MatchTime').text
         time_data = soup.select_one('.MuiTypography-caption.MatchTime').text
+        formatted_time = self.format_time(self.time_data)
+        self.formatted_time = formatted_time
         jerseys_info = soup.select('.customEditionChip .MuiChip-label')
         jerseys = ', '.join([jersey.text for jersey in jerseys_info[:2]])
         opponent_info = soup.select('h5.MuiTypography-h5')
@@ -86,15 +86,13 @@ class WebCrawler:
 
         with open(r"C:\Users\ahmad\NBA-Gameday-Generator\nba_colors.json", 'r') as f:
             nba_colors = json.load(f)
-        # Assign the appropriate colors
+
+      
         home_team_primary = nba_colors[self.home_team.title()][home_jersey]["first_color"]
         home_team_secondary = nba_colors[self.home_team.title()][home_jersey]["second_color"]
         away_team_primary = nba_colors[self.away_team.title()][away_jersey]["first_color"]
         away_team_secondary = nba_colors[self.away_team.title()][away_jersey]["second_color"]
-        print(home_team_primary)
-        print(home_team_secondary)
-        print(away_team_primary)
-        print(away_team_secondary)
+  
 
 
         
@@ -103,7 +101,6 @@ class WebCrawler:
      
         
 
-        # Output data for both teams
         self.process_and_output_data(self.home_team, self.away_team, jerseys, location, formatted_date, time_data)
 
     def process_and_output_data(self, home_team, away_team, jerseys, location, date, time_data):
@@ -117,12 +114,28 @@ class WebCrawler:
             print("UnicodeEncodeError: Unable to print some characters")
 
     def format_date(self, raw_date):
-        return raw_date
+        formatted_date = raw_date.split(', ')[1]
+        return formatted_date
+
+    
+    def format_time(self, raw_time):
+       
+        raw_time = " ".join(raw_time.split())
+       
+        time, am_pm, timezone = raw_time.split()
+        
+        time_object = datetime.strptime(time + ' ' + am_pm, '%I:%M %p')
+      
+        if timezone == 'EST':
+            time_object = time_object - timedelta(hours=1)  # Convert EST to CST
+    
+        formatted_time = time_object.strftime('%I:%M %p\nCT').lstrip('0')
+        return formatted_time
 
     def quit_webdriver(self):
         self.driver.quit()
 
-    # Fetch last 5 games results
+   
     def get_last_5_games_results(self, team_name):
         base_url = f"https://www.statmuse.com/nba/ask/{team_name.lower().replace(' ', '-')}-last-5-games"
         response = requests.get(base_url)
@@ -130,7 +143,7 @@ class WebCrawler:
         if response.status_code == 200:
             soup = BeautifulSoup(response.content, 'html.parser')
 
-            # Extract last 5 games results
+            
             last_5_games = []
 
             game_result_divs = soup.find_all('div', {'class': 'w-5'})
@@ -143,7 +156,7 @@ class WebCrawler:
             print(f"Failed to fetch data from {base_url}")
             return None
 
-    # Fetch team record and seeding
+   
     def get_record_and_seeding(self, team_name):
         base_url = f"https://www.statmuse.com/ask/{team_name.lower().replace(' ', '-')}"
         response = requests.get(base_url)
@@ -151,7 +164,7 @@ class WebCrawler:
         if response.status_code == 200:
             soup = BeautifulSoup(response.content, 'html.parser')
 
-            # Extract record and seeding
+            
             record_element = soup.select_one('.whitespace-nowrap span:nth-of-type(1)')
             seeding_element = soup.select_one('.whitespace-nowrap span:nth-of-type(3)')
             record = record_element.text.strip() if record_element else "N/A"
@@ -166,7 +179,7 @@ if __name__ == "__main__":
     team_name = input("Enter the team name: ")
     team_crawler = WebCrawler(fr"https://lockervision.nba.com/team/{team_name.lower().replace(' ', '-')}", 1)
 
-    # 1) Generate Adobe access token
+    
     adobe_curl_command = [
         'curl',
         '-X', 'POST',
@@ -182,7 +195,7 @@ if __name__ == "__main__":
         print(f"Error generating Adobe access token: {e}")
         exit(1)
 
-    # 2) Generate a Dropbox download link from Gameday Generator/Base.psd and font
+   
     download_curl_command = [
         'curl',
         '-X', 'POST',
@@ -215,7 +228,7 @@ if __name__ == "__main__":
         print(f"Error generating download link: {e}")
         exit(1)
 
-    # 3) Generate a Dropbox upload link from Gameday Generator/Base1.psd
+    
     upload_curl_command = [
         'curl',
         '-X', 'POST',
@@ -231,7 +244,7 @@ if __name__ == "__main__":
     except subprocess.CalledProcessError as e:
         print(f"Error generating upload link: {e}")
         exit(1)
-    # 8) Read a file called actions_request.json and overwrite the file with the same things as request.json minus the things from the text editing part
+   
     team_crawler.last_5_games_results_home = list(team_crawler.last_5_games_results_home)
     team_crawler.last_5_games_results_away = list(team_crawler.last_5_games_results_away)
     try:
@@ -240,16 +253,16 @@ if __name__ == "__main__":
              
    
       
-        layer_name = None  # Initialize layer_name
+        layer_name = None 
         for i in range(0, len(data["options"]["actionJSON"]), 2):
             select_action = data["options"]["actionJSON"][i]
             set_action = data["options"]["actionJSON"][i+1]
                     
-            # Get the layer name from the select action
+            
             layer_name = select_action["_target"][0]["_name"]
     
 
-            # Update the color values in the set action based on the layer name
+          
             if layer_name == "W/L (1) Home" and team_crawler.last_5_games_results_home[0] != "L":
                         set_action["to"]["color"]["red"] = home_team_primary[0]
                         set_action["to"]["color"]["grain"] = home_team_primary[1]
@@ -329,12 +342,12 @@ if __name__ == "__main__":
                             color_stop["color"]["grain"] = away_team_secondary[1]
                             color_stop["color"]["blue"] = away_team_secondary[2]
         for input_layer in data["inputs"]:
-            if input_layer["href"] == "download_link":  # Check if href is "download_link"
-                input_layer["href"] = download_link  # Assign the download_link value to href
+            if input_layer["href"] == "download_link": 
+                input_layer["href"] = download_link  
 
         for output_layer in data["outputs"]:
-            if output_layer["href"] == "upload_link":  # Check if href is "upload_link"
-                output_layer["href"] = upload_link  # Assign the upload_link value to href
+            if output_layer["href"] == "upload_link":
+                output_layer["href"] = upload_link 
 
         for i in range(0, len(data["options"]["actionJSON"]), 2):
             select_action = data["options"]["actionJSON"][i]
@@ -347,7 +360,7 @@ if __name__ == "__main__":
         print(f"Error modifying data: {e}")
         exit(1)
 
-    # 9) Make a curl request using /psdService/actionJSON with all the previously allocated data
+    
     action_curl_command = [
         'curl',
         '-X', 'POST',
@@ -355,11 +368,11 @@ if __name__ == "__main__":
         '--header', f'Authorization: Bearer {adobe_access_token}',
         '--header', f'x-api-key: {adobe_api_key}',
         '--header', 'Content-Type: application/json',
-        '--data', json.dumps(data)  # Convert data to JSON string
+        '--data', json.dumps(data) 
     ]
     try:
         action_response = subprocess.check_output(action_curl_command)
-        print("Action API Response:", action_response.decode())  # Print the output
+        print("Action API Response:", action_response.decode()) 
     except subprocess.CalledProcessError as e:
         print(f"Error executing cURL command for performing actions on JSON data: {e}")
 
@@ -380,7 +393,7 @@ if __name__ == "__main__":
     except subprocess.CalledProcessError as e:
         print(f"Error generating download link: {e}")
         exit(1)
-    # 7) Generate ANOTHER Dropbox upload link from Gameday Generator/Base1.psd
+ 
     try:
         upload_output = subprocess.check_output(upload_curl_command)
         upload_output_json = json.loads(upload_output)
@@ -390,7 +403,7 @@ if __name__ == "__main__":
         exit(1)
 
 
-    # 4) Read a file called text_request.json and overwrite the file with the same things as request.json, minus the things from actionJSON
+ 
 
     
 
@@ -402,9 +415,9 @@ if __name__ == "__main__":
     try:
         with open('C:\\Users\\ahmad\\OneDrive\\Gameday Generator\\text_request.json', 'r') as file:
             data = json.load(file)
-        # Update the inputs and outputs fields
+        
         for layer in data["options"]["layers"]:
-            for i in range(1, 6):  # for each of the last 5 games
+            for i in range(1, 6): 
                 if layer["name"] == f"Game {i} Home":
                     layer["text"]["contents"] = team_crawler.last_5_games_results_home[i-1]
                 if layer["name"] == f"Game {i} Away":
@@ -424,17 +437,16 @@ if __name__ == "__main__":
             if layer["name"] == "Date":
                 layer["text"]["contents"] = team_crawler.formatted_date
             if layer["name"] == "Time":
-                layer["text"]["contents"] = team_crawler.time_data
+                layer["text"]["contents"] = team_crawler.formatted_time
         for input_layer in data["inputs"]:
-            if input_layer["href"] == "download_link":  # Check if href is "download_link"
-                input_layer["href"] = download_link  # Assign the text_download_link value to href
+            if input_layer["href"] == "download_link":  
+                input_layer["href"] = download_link
         for output_layer in data["outputs"]:
-            if output_layer["href"] == "upload_link":  # Check if href is "upload_link"
-                output_layer["href"] = upload_link  # Assign the text_upload_link value to href
+            if output_layer["href"] == "upload_link":  
+                output_layer["href"] = upload_link  
         for font_layer in data["options"]["fonts"]:
-            if font_layer["href"] == "font_link":  # Check if href is "font_download_link"
-                font_layer["href"] = download_font_link  # Assign the text_download_link value to href
-
+            if font_layer["href"] == "font_link": 
+                font_layer["href"] = download_font_link  
         with open('C:\\Users\\ahmad\\OneDrive\\Gameday Generator\\NEW_text_request.json', 'w') as file:
             json.dump(data, file, indent=4)
         
@@ -443,8 +455,7 @@ if __name__ == "__main__":
         exit(1)
         
   
-    # 5) Make a curl request using /psdService/text with all the previously allocated data
-    
+   
     text_curl_command = [
         'curl',
         '-X', 'POST',
@@ -452,24 +463,24 @@ if __name__ == "__main__":
         '--header', f'Authorization: Bearer {adobe_access_token}',
         '--header', f'x-api-key: {adobe_api_key}',
         '--header', 'Content-Type: application/json',
-        '--data', json.dumps(data)  # Convert data to JSON string
+        '--data', json.dumps(data) 
     ]
     try:
         text_response = subprocess.check_output(text_curl_command)
-        print("Text API Response:", text_response.decode())  # Print the output
+        print("Text API Response:", text_response.decode())
     except subprocess.CalledProcessError as e:
         print(f"Error executing cURL command for editing text: {e}")
     if home_jersey == "Association Edition" or home_jersey == "Icon Edition":
         home_jersey = "Default"
-        print(home_jersey)
+        
     if away_jersey == "Association Edition" or away_jersey == "Icon Edition":
         away_jersey = "Default"
-        print(away_jersey)
+      
     home_team_path = f'/team_logos/{home_jersey}/{team_crawler.home_team.lower().replace(" ", "")}.png'
     away_team_path = f'/team_logos/{away_jersey}/{team_crawler.away_team.lower().replace(" ", "")}.png'
     arena_path = f'/arenas/{team_crawler.home_team.lower().replace(" ", "")}.png'
     
-    time.sleep(5)
+    time.sleep(10)
     download_curl_command = [
         'curl',
         '-X', 'POST',
@@ -485,7 +496,7 @@ if __name__ == "__main__":
     except subprocess.CalledProcessError as e:
         print(f"Error generating download link: {e}")
         exit(1)
-    #download home and away team logos
+    
     download_home_curl_command = [
         'curl',
         '-X', 'POST',
@@ -501,7 +512,6 @@ if __name__ == "__main__":
 
         download_output_json = json.loads(download_output)
         download_home_link = download_output_json.get('link')
-        print(download_home_link)
     except subprocess.CalledProcessError as e:
         print(f"Error generating download link: {e}")
         exit(1)
@@ -519,7 +529,7 @@ if __name__ == "__main__":
         download_output = subprocess.check_output(download_away_curl_command)
         download_output_json = json.loads(download_output)
         download_away_link = download_output_json.get('link')
-        print(download_away_link)
+    
     except subprocess.CalledProcessError as e:
         print(f"Error generating download link: {e}")
         exit(1)
@@ -536,12 +546,10 @@ if __name__ == "__main__":
         download_output = subprocess.check_output(download_arena_curl_command)
         download_output_json = json.loads(download_output)
         download_arena_link = download_output_json.get('link')
-        print(download_arena_link)
     except subprocess.CalledProcessError as e:
         print(f"Error generating download link: {e}")
         exit(1)
     
-     # 7) Generate ANOTHER Dropbox upload link from Gameday Generator/Base1.psd
     try:
         upload_output = subprocess.check_output(upload_curl_command)
         upload_output_json = json.loads(upload_output)
@@ -552,7 +560,7 @@ if __name__ == "__main__":
     try:
         with open('C:\\Users\\ahmad\\OneDrive\\Gameday Generator\\image_request.json', 'r') as file:
             data = json.load(file)
-        # Update the inputs and outputs fields            
+              
         for layer in data["options"]["layers"]:
             if layer["name"] == "Home Team Logo":
                 layer["input"]["href"] = download_home_link
@@ -567,11 +575,11 @@ if __name__ == "__main__":
 
                 
         for input_layer in data["inputs"]:
-            if input_layer["href"] == "download_link":  # Check if href is "download_link"
-                input_layer["href"] = download_link  # Assign the text_download_link value to href
+            if input_layer["href"] == "download_link": 
+                input_layer["href"] = download_link  
         for output_layer in data["outputs"]:
-            if output_layer["href"] == "upload_link":  # Check if href is "upload_link"
-                output_layer["href"] = upload_link  # Assign the text_upload_link value to href
+            if output_layer["href"] == "upload_link": 
+                output_layer["href"] = upload_link 
         
         with open('C:\\Users\\ahmad\\OneDrive\\Gameday Generator\\NEW_image_request.json', 'w') as file:
             json.dump(data, file, indent=4)
@@ -586,11 +594,11 @@ if __name__ == "__main__":
         '--header', f'Authorization: Bearer {adobe_access_token}',
         '--header', f'x-api-key: {adobe_api_key}',
         '--header', 'Content-Type: application/json',
-        '--data', json.dumps(data)  # Convert data to JSON string
+        '--data', json.dumps(data)  
     ]
     try:
         text_response = subprocess.check_output(image_curl_command)
-        print("Image API Response:", text_response.decode())  # Print the output
+        print("Image API Response:", text_response.decode()) 
     except subprocess.CalledProcessError as e:
         print(f"Error executing cURL command for editing text: {e}")
 
