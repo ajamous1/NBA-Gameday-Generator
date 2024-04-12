@@ -50,3 +50,7 @@ https://dropbox.github.io/dropbox-api-v2-explorer/#files_get_temporary_link
 
 https://dropbox.github.io/dropbox-api-v2-explorer/#files_get_temporary_upload_link
 
+## License
+
+Please see the LICENSE file for the terms of use of this project.
+
