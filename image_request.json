@@ -1,0 +1,80 @@
+{
+  "inputs": [
+    {
+      "storage": "dropbox",
+      "href": "download_link"
+    }
+  ],
+  "options": {
+    "layers": [
+      {
+        "name": "Home Logo",
+        "input": {
+          "storage": "dropbox",
+          "href": "home_logo"
+        },
+        "bounds": {
+          "height": 120,
+          "width": 120,
+          "left": 480,
+          "top": 600
+        }
+      },
+      {
+        "name": "Away Logo",
+        "input": {
+          "storage": "dropbox",
+          "href": "away_logo"
+        },
+        "bounds": {
+          "height": 120,
+          "width": 120,
+          "left": 480,
+          "top": 255
+        }
+      },
+      {
+        "name": "Arena Logo",
+        "input": {
+          "storage": "dropbox",
+          "href": "arena_logo"
+        },
+        "bounds": {
+          "height": 80,
+          "width": 120,
+          "left": 480,
+          "top": 10
+        }
+      },
+      {
+        "name": "Away Team Logo",
+        "input": {
+          "storage": "dropbox",
+          "href": "away_logo"
+        },
+        "bounds": {
+          "left": -225,
+          "top": -75
+        }
+      },
+      {
+        "name": "Home Team Logo",
+        "input": {
+          "storage": "dropbox",
+          "href": "home_logo"
+        },
+        "bounds": {
+          "left": 950,
+          "top": -75
+        }
+      }
+    ]
+  },
+  "outputs": [
+    {
+      "storage": "dropbox",
+      "type": "vnd.adobe.photoshop",
+      "href": "upload_link"
+    }
+  ]
+}

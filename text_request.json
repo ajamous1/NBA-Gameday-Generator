@@ -1,0 +1,235 @@
+{
+  "inputs": [
+    {
+      "storage": "dropbox",
+      "href": "download_link"
+    }
+  ],
+  "options": {
+    "manageMissingFonts": "fail",
+    "globalFont": "Lovelo-Black",
+    "fonts": [
+      {
+        "storage": "dropbox",
+        "href": "font_link"
+      }
+    ],
+    "layers": [
+      {
+        "name": "Away Position",
+        "text": {
+          "contents": "away_position",
+          "characterStyles": [
+            {
+              "fontPostScriptName": "Lovelo-Black"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Home Position",
+        "text": {
+          "contents": "home_position",
+          "characterStyles": [
+            {
+              "fontPostScriptName": "Lovelo-Black"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Away Team",
+        "text": {
+          "contents": "away_team",
+          "characterStyles": [
+            {
+              "fontPostScriptName": "Lovelo-Black"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Home Team",
+        "text": {
+          "contents": "home_team",
+          "characterStyles": [
+            {
+              "fontPostScriptName": "Lovelo-Black"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Away Record",
+        "text": {
+          "contents": "away_record",
+          "characterStyles": [
+            {
+              "fontPostScriptName": "Lovelo-Black"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Home Record",
+        "text": {
+          "contents": "home_record",
+          "characterStyles": [
+            {
+              "fontPostScriptName": "Lovelo-Black"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Time",
+        "text": {
+          "contents": "game_time",
+          "characterStyles": [
+            {
+              "fontPostScriptName": "Lovelo-Black"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Date",
+        "text": {
+          "contents": "game_date",
+          "characterStyles": [
+            {
+              "fontPostScriptName": "Lovelo-Black"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Game 1 Home",
+        "text": {
+          "contents": "home_result_1",
+          "characterStyles": [
+            {
+              "fontPostScriptName": "Lovelo-Black"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Game 2 Home",
+        "text": {
+          "contents": "home_result_2",
+          "characterStyles": [
+            {
+              "fontPostScriptName": "Lovelo-Black"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Game 3 Home",
+        "text": {
+          "contents": "home_result_3",
+          "characterStyles": [
+            {
+              "fontPostScriptName": "Lovelo-Black"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Game 4 Home",
+        "text": {
+          "contents": "home_result_4",
+          "characterStyles": [
+            {
+              "fontPostScriptName": "Lovelo-Black"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Game 5 Home",
+        "text": {
+          "contents": "home_result_5",
+          "characterStyles": [
+            {
+              "fontPostScriptName": "Lovelo-Black"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Game 1 Away",
+        "text": {
+          "contents": "away_result_1",
+          "characterStyles": [
+            {
+              "fontPostScriptName": "Lovelo-Black"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Game 2 Away",
+        "text": {
+          "contents": "away_result_",
+          "characterStyles": [
+            {
+              "fontPostScriptName": "Lovelo-Black"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Game 3 Away",
+        "text": {
+          "contents": "away_result_3",
+          "characterStyles": [
+            {
+              "fontPostScriptName": "Lovelo-Black"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Game 4 Away",
+        "text": {
+          "contents": "away_result_4",
+          "characterStyles": [
+            {
+              "fontPostScriptName": "Lovelo-Black"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Game 5 Away",
+        "text": {
+          "contents": "away_result_5",
+          "characterStyles": [
+            {
+              "fontPostScriptName": "Lovelo-Black"
+            }
+          ]
+        }
+      }
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+    ]
+  },
+  "outputs": [
+    {
+      "storage": "dropbox",
+      "type": "vnd.adobe.photoshop",
+      "href": "upload_link"
+    }
+  ]
+}
