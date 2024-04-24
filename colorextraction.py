@@ -9,6 +9,7 @@ import os
 import json
 import time
 
+#all 2 colors from NBA teams (was used for testing, not relevant)
 nba_teams = {
     "Atlanta Hawks": {"Color 1": [225, 68, 52], "Color 2": [253, 185, 39]},
     "Boston Celtics": {"Color 1": [0, 122, 51], "Color 2": [139, 111, 78]},
@@ -52,7 +53,7 @@ def setup_webdriver():
         print(f"Error setting up Chromedriver: {e}")
         exit(1)
 
-
+#filter out all dark grey colors (from background)
 def is_black_or_grey(rgb):
     return all([abs(int(c) - int(rgb[0])) < 50 for c in rgb])
 
@@ -71,7 +72,7 @@ def get_top_colors(img):
             break
     return {"first_color": top_colors[0], "second_color": top_colors[1] if len(top_colors) > 1 else None}
 
-
+#process team colors for each team once a year
 def get_team_colors(driver, team_name):
     print(f"Processing jerseys for {team_name}...")
     url = f"https://lockervision.nba.com/team/{team_name}"
@@ -94,7 +95,8 @@ def get_team_colors(driver, team_name):
         jersey_type = jersey_type.replace("ME", "Mamba Edition")
 
         print(f"Processing {jersey_type}...")
-       
+
+        #all association edition jerseys have white in them. For that reason, they are always the secondary color
         if "Association Edition" in jersey_type:
             # For Association Edition, first color is white and second color is Color 1
             team_colors[jersey_type] = {"first_color": nba_teams[formatted_team_name]["Color 1"], 
